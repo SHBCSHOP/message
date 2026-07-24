@@ -6,6 +6,7 @@
 <title>message</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --cream:#F7F5EF;
@@ -252,17 +253,23 @@
 
   <header class="top">
     <div class="brandmark">
-      <div class="logo">message</div>
+
       <div>
         <p>生日／父親節／母親節／春節</p>
       </div>
     </div>
     <div class="top-actions">
+      <span class="save-status" id="authStatus"><span class="sdot" id="authDot" style="background:#c0392b;"></span><span id="authStatusText">尚未登入 Google</span></span>
+      <button class="btn btn-coral btn-sm" id="googleSignInBtn">🔑 登入公司 Google 帳號</button>
       <span class="save-status" id="saveStatus"><span class="sdot"></span><span id="saveStatusText">已載入</span></span>
       <button class="btn btn-ghost btn-sm" id="saveBtn">💾 立即儲存</button>
       <button class="btn btn-primary btn-sm" id="exportBtn">⬇ 匯出目前分頁文字檔</button>
     </div>
   </header>
+
+  <div id="authGate" style="display:none;background:var(--coral-pale);border:1.5px solid var(--coral);border-radius:var(--radius);padding:18px 22px;margin-bottom:22px;color:#7a3319;font-weight:700;">
+    請先按上方「🔑 登入公司 Google 帳號」，登入後才能讀取／儲存共用資料（所有同事共用同一份雲端資料，存在公司 Google Drive 裡）。
+  </div>
 
   <div class="section-tabs" id="sectionTabs"></div>
 
@@ -344,6 +351,124 @@ const LIBRARY = [{"cat": "生日月初", "date": "01/02", "content": "世華生�
 const MONTHS = ["01","02","03","04","05","06","07","08","09","10","11","12"];
 const MONTH_LABEL = {"01":"1月","02":"2月","03":"3月","04":"4月","05":"5月","06":"6月","07":"7月","08":"8月","09":"9月","10":"10月","11":"11月","12":"12月"};
 const GROUP_LABEL = {A:"A群（1年內消費）",B:"B群（1–2年未消費）",C:"C群（2年以上未消費）"};
+/* ---------- Google Drive-backed shared storage (for running outside Claude.ai, e.g. GitHub Pages) ----------
+   Claude.ai artifacts provide a built-in `window.storage` cloud API. Once this page is
+   deployed on a normal website (like GitHub Pages), that API no longer exists. Here we
+   replace it with a version backed by Google Drive, so everyone who signs in with the
+   SAME shared company Google account sees and edits the same data. Each "key" is stored
+   as one JSON file (named "<key>.json") in that Google account's Drive, created by this
+   app (drive.file scope — the app can only see files it created itself, which is fine
+   since everyone uses the one shared account). */
+const GOOGLE_CLIENT_ID = "372376769486-dlp4k547u97gat0rv68jnsqpgdhf7ndh.apps.googleusercontent.com";
+const GOOGLE_DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
+
+let gAccessToken = null;
+let gTokenClient = null;
+let gSignedIn = false;
+const fileIdCache = {}; // key -> Drive fileId, cached per session
+
+function setAuthUI(signedIn, label){
+  gSignedIn = signedIn;
+  document.getElementById('authDot').style.background = signedIn ? "#1F6F5C" : "#c0392b";
+  document.getElementById('authStatusText').textContent = label;
+  document.getElementById('authGate').style.display = signedIn ? "none" : "block";
+  document.getElementById('googleSignInBtn').textContent = signedIn ? "🔑 已登入（切換帳號）" : "🔑 登入公司 Google 帳號";
+}
+
+async function driveFetch(url, options){
+  if(!gAccessToken) throw new Error("尚未登入 Google");
+  options = options || {};
+  options.headers = Object.assign({}, options.headers, { Authorization: "Bearer " + gAccessToken });
+  const res = await fetch(url, options);
+  if(res.status === 401){ gAccessToken = null; setAuthUI(false, "登入已過期，請重新登入"); throw new Error("token expired"); }
+  return res;
+}
+
+async function findDriveFileId(key){
+  if(fileIdCache[key]) return fileIdCache[key];
+  const name = encodeURIComponent(key + ".json");
+  const q = encodeURIComponent(`name='${key}.json' and trashed=false`);
+  const res = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name)`);
+  const data = await res.json();
+  if(data.files && data.files.length > 0){
+    fileIdCache[key] = data.files[0].id;
+    return data.files[0].id;
+  }
+  return null;
+}
+
+window.storage = {
+  async get(key, shared){
+    const id = await findDriveFileId(key);
+    if(!id) throw new Error("key not found: " + key);
+    const res = await driveFetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`);
+    const value = await res.text();
+    return { key, value, shared: !!shared };
+  },
+  async set(key, value, shared){
+    let id = await findDriveFileId(key);
+    if(id){
+      await driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${id}?uploadType=media`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: value
+      });
+    }else{
+      const boundary = "shbcboundary" + Date.now();
+      const metadata = { name: key + ".json", mimeType: "application/json" };
+      const body =
+        `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+        `--${boundary}\r\nContent-Type: application/json\r\n\r\n${value}\r\n--${boundary}--`;
+      const res = await driveFetch(`https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id`, {
+        method: "POST",
+        headers: { "Content-Type": `multipart/related; boundary=${boundary}` },
+        body
+      });
+      const data = await res.json();
+      fileIdCache[key] = data.id;
+    }
+    return { key, value, shared: !!shared };
+  },
+  async delete(key, shared){
+    const id = await findDriveFileId(key);
+    if(id){
+      await driveFetch(`https://www.googleapis.com/drive/v3/files/${id}`, { method: "DELETE" });
+      delete fileIdCache[key];
+    }
+    return { key, deleted: true, shared: !!shared };
+  },
+  async list(prefix, shared){
+    const q = encodeURIComponent(`name contains '${prefix||""}' and trashed=false`);
+    const res = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name)`);
+    const data = await res.json();
+    const keys = (data.files||[]).map(f=> f.name.replace(/\.json$/, ""));
+    return { keys, prefix, shared: !!shared };
+  }
+};
+
+function initGoogleAuth(){
+  gTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: GOOGLE_DRIVE_SCOPE,
+    callback: async (resp)=>{
+      if(resp.error){ setAuthUI(false, "登入失敗，請再試一次"); return; }
+      gAccessToken = resp.access_token;
+      setAuthUI(true, "已登入（共用資料）");
+      toast("已登入 Google，正在載入共用資料…");
+      await bootAfterAuth();
+    }
+  });
+  document.getElementById('googleSignInBtn').onclick = ()=>{
+    // manual click always shows the Google chooser/consent screen so the person can
+    // pick or confirm the shared company account
+    gTokenClient.requestAccessToken({ prompt: "select_account" });
+  };
+  // try a silent sign-in first (works if the browser already has an active session
+  // with the shared account and consent was granted before). If it can't complete
+  // silently, nothing happens here — the person just clicks the sign-in button.
+  try{ gTokenClient.requestAccessToken({ prompt: "" }); }catch(e){ /* ignore, wait for manual click */ }
+}
+
 const STORAGE_KEY = "shbc_sms_planner_v6";
 const PRIOR_STORAGE_KEYS = ["shbc_sms_planner_v5", "shbc_sms_planner_v4", "shbc_sms_planner_v3", "shbc_sms_planner_v2", "birthday_sms_yearplan_v1"];
 const BRAND = "世華生技";
@@ -954,11 +1079,13 @@ function renderOccasionPanel(){
 
 /* ---------- manual save + export ---------- */
 document.getElementById('saveBtn').onclick = async ()=>{
+  if(!gSignedIn || !state){ toast("請先登入 Google 帳號"); return; }
   await saveState(true);
   toast("已儲存！");
 };
 
 document.getElementById('exportBtn').onclick = ()=>{
+  if(!state){ toast("請先登入 Google 帳號"); return; }
   let lines = [];
   if(activeSection === "birthday"){
     lines.push("世華生技｜壽星生日簡訊年度規劃", "");
@@ -1053,7 +1180,7 @@ function renderLibraryList(){
 document.getElementById('libSearch').oninput = renderLibraryList;
 
 /* ---------- boot ---------- */
-(async function init(){
+async function bootAfterAuth(){
   setSaveStatus("載入中…");
   await loadState();
   const now = new Date();
@@ -1061,6 +1188,12 @@ document.getElementById('libSearch').oninput = renderLibraryList;
   setSaveStatus("已載入");
   renderSection();
   renderLibrary();
+}
+
+(function init(){
+  setAuthUI(false, "尚未登入 Google");
+  renderLibrary(); // library list works without sign-in, so show it right away
+  initGoogleAuth();
 })();
 </script>
 </body>
