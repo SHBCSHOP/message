@@ -215,14 +215,24 @@
 </style>
 </head>
 <body>
+  <script>
+(function() {
+  var correctPassword = "0800655988";
+  var input = prompt("請輸入密碼：");
+  if (input !== correctPassword) {
+    document.body.innerHTML = "<h2 style='text-align:center;margin-top:100px;'>密碼錯誤</h2>";
+    throw new Error("驗證失敗");
+  }
+})();
+</script>
 <div class="wrap">
 
   <header class="top">
     <div class="brandmark">
-      <div class="logo">世華</div>
+      <div class="logo">message</div>
       <div>
-        <h1>節慶簡訊規劃工具</h1>
-        <p>世華生技 · 生日／父親節／母親節／春節 簡訊管理</p>
+        <h1>簡訊工具</h1>
+        <p>生日／父親節／母親節／春節</p>
       </div>
     </div>
     <div class="top-actions">
