@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>世華生技｜節慶簡訊規劃工具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7F5EF;
+    --paper:#FFFFFF;
+    --ink:#1F2A24;
+    --ink-soft:#4B564E;
+    --teal:#1F6F5C;
+    --teal-deep:#164F42;
+    --teal-pale:#E4F1EB;
+    --coral:#E4784B;
+    --coral-pale:#FBE7DC;
+    --gold:#C9971F;
+    --plum:#8B5A8C;
+    --plum-pale:#F1E4F1;
+    --line:#E1DCD0;
+    --danger:#C0392B;
+    --radius:18px;
+    --shadow: 0 6px 20px rgba(31,42,36,0.07);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+    font-size:18px;
+    line-height:1.6;
+    padding:28px 20px 80px;
+  }
+  .wrap{max-width:980px;margin:0 auto;}
+
+  header.top{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    gap:20px;flex-wrap:wrap;
+    margin-bottom:20px;
+  }
+  .brandmark{display:flex;align-items:center;gap:14px;}
+  .brandmark .logo{
+    width:52px;height:52px;border-radius:14px;
+    background:linear-gradient(160deg,var(--teal),var(--teal-deep));
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:900;font-size:22px;flex:none;
+    box-shadow:var(--shadow);
+  }
+  .brandmark h1{font-size:24px;margin:0;font-weight:900;letter-spacing:.5px;}
+  .brandmark p{margin:2px 0 0;color:var(--ink-soft);font-size:14px;}
+  .top-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .save-status{font-size:13px;color:var(--ink-soft);font-weight:700;display:flex;align-items:center;gap:6px;}
+  .save-status .sdot{width:8px;height:8px;border-radius:50%;background:var(--teal);}
+  .btn{
+    border:none;border-radius:999px;padding:11px 20px;font-size:15px;font-weight:700;
+    cursor:pointer;transition:transform .12s ease, box-shadow .12s ease;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-primary{background:var(--teal);color:#fff;box-shadow:0 4px 12px rgba(31,111,92,.28);}
+  .btn-primary:hover{background:var(--teal-deep);}
+  .btn-ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--teal);color:var(--teal-deep);}
+  .btn-coral{background:var(--coral);color:#fff;}
+  .btn-sm{padding:8px 14px;font-size:13.5px;}
+
+  /* section tabs (birthday / father / mother / spring / +) */
+  .section-tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 16px;margin-bottom:4px;}
+  .section-tab{
+    flex:none;padding:11px 20px;border-radius:14px;background:var(--paper);
+    border:1.5px solid var(--line);font-weight:800;font-size:15.5px;cursor:pointer;color:var(--ink-soft);
+    white-space:nowrap;display:flex;align-items:center;gap:8px;
+  }
+  .section-tab.active{background:var(--ink);color:#fff;border-color:var(--ink);box-shadow:var(--shadow);}
+  .section-tab.add{border-style:dashed;color:var(--ink-soft);}
+
+  /* month rail */
+  .month-rail{
+    display:flex;gap:8px;overflow-x:auto;padding:6px 2px 14px;margin-bottom:6px;
+    scrollbar-width:thin;
+  }
+  .month-pill{
+    flex:none;padding:10px 18px;border-radius:999px;background:var(--paper);
+    border:1.5px solid var(--line);font-weight:700;font-size:15px;cursor:pointer;color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .month-pill.active{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:var(--shadow);}
+  .month-pill .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--coral);margin-right:6px;vertical-align:middle;}
+
+  .panel{
+    background:var(--paper);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow);
+    margin-bottom:22px;
+  }
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+  .panel-head h2{font-size:22px;margin:0;font-weight:900;}
+  .theme-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .theme-row label{font-weight:700;color:var(--ink-soft);font-size:15px;}
+  .theme-input{
+    flex:1;min-width:220px;font-size:17px;font-weight:700;padding:10px 14px;border-radius:12px;
+    border:1.5px solid var(--line);background:var(--teal-pale);color:var(--teal-deep);
+  }
+  .theme-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+  .theme-tab{
+    padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--cream);
+    font-size:14px;font-weight:700;cursor:pointer;color:var(--ink-soft);display:flex;align-items:center;gap:6px;
+  }
+  .theme-tab.active{background:var(--coral-pale);border-color:var(--coral);color:#a54a26;}
+  .theme-tab .x{
+    border:none;background:transparent;color:#a08d78;font-weight:800;font-size:12.5px;
+    padding:3px 8px;border-radius:8px;cursor:pointer;
+  }
+  .theme-tab .x:hover{color:#fff;background:var(--danger);}
+
+  /* content blocks — full-width, stacked top to bottom (matches library rows) */
+  .blocks{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
+  .block{
+    width:100%;border-radius:16px;padding:18px 20px;border:1.5px solid var(--line);background:var(--cream);
+    border-left:6px solid var(--line);
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .block.groupA{border-left-color:var(--coral);}
+  .block.groupB{border-left-color:var(--gold);}
+  .block.groupC{border-left-color:var(--teal);}
+  .block.groupX{border-left-color:var(--plum);}
+  .block-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+  .block-title h3{margin:0;font-size:16.5px;font-weight:900;}
+  .brand-prefix{
+    display:flex;align-items:center;gap:8px;background:var(--teal-deep);color:#fff;
+    font-weight:900;font-size:15px;padding:9px 14px;border-radius:12px 12px 0 0;
+    letter-spacing:.5px;margin-bottom:-6px;width:fit-content;
+  }
+  .brand-prefix .lock{font-size:13px;opacity:.85;}
+  .block-label-input{
+    flex:1;min-width:160px;font-size:14.5px;font-weight:700;padding:7px 12px;border-radius:9px;
+    border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);
+  }
+  .block textarea{
+    width:100%;min-height:90px;resize:vertical;font-size:19px;line-height:1.65;
+    font-family:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);
+    background:var(--paper);color:var(--ink);font-weight:500;overflow:hidden;
+  }
+  .block textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+  .block-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+  .charcount{font-size:14px;font-weight:800;color:var(--teal-deep);}
+  .charcount.over{color:var(--danger);}
+  .block-btns{display:flex;gap:8px;}
+  .icon-btn{
+    border:none;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;
+    padding:7px 12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .icon-btn:hover{border-color:var(--teal);color:var(--teal-deep);}
+  .icon-btn.copied{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .icon-btn.del:hover{border-color:var(--danger);color:var(--danger);}
+
+  /* rules panel */
+  details.rules{background:var(--teal-pale);border-radius:var(--radius);padding:4px 22px;margin-bottom:22px;}
+  details.rules summary{cursor:pointer;padding:14px 0;font-weight:800;color:var(--teal-deep);font-size:16px;list-style:none;display:flex;align-items:center;gap:8px;}
+  details.rules summary::-webkit-details-marker{display:none;}
+  details.rules summary::before{content:"▸";display:inline-block;transition:transform .15s;}
+  details.rules[open] summary::before{transform:rotate(90deg);}
+  .rules-body{padding:0 0 18px;color:var(--teal-deep);font-size:15px;}
+  .rules-body ul{margin:8px 0;padding-left:22px;}
+  .rules-body li{margin-bottom:5px;}
+
+  /* library */
+  .lib-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;}
+  .lib-head h2{margin:0;font-size:22px;font-weight:900;}
+  .lib-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .search-box{
+    padding:10px 16px;border-radius:999px;border:1.5px solid var(--line);font-size:15px;min-width:200px;
+    background:var(--paper);
+  }
+  .cat-filter{display:flex;gap:6px;flex-wrap:wrap;}
+  .cat-chip{
+    padding:6px 13px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);
+    font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+  }
+  .cat-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .lib-list{display:flex;flex-direction:column;gap:10px;max-height:520px;overflow-y:auto;padding-right:6px;}
+  .lib-row{
+    background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;
+  }
+  .lib-row .txt{flex:1;min-width:240px;}
+  .lib-row .meta{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap;}
+  .badge{font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--teal-pale);color:var(--teal-deep);}
+  .badge.date{background:var(--coral-pale);color:#a54a26;}
+  .lib-row .content{font-size:16px;color:var(--ink);}
+  .lib-row .use-btn{flex:none;}
+
+  footer{text-align:center;color:var(--ink-soft);font-size:13px;margin-top:36px;}
+  .assump{background:var(--coral-pale);color:#8a3d1f;border-radius:14px;padding:14px 18px;font-size:14px;margin-bottom:22px;}
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font-weight:700;
+    font-size:15px;box-shadow:0 8px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s, transform .25s;
+    z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px);}
+  .modal-overlay{position:fixed;inset:0;background:rgba(31,42,36,.45);display:flex;align-items:center;justify-content:center;z-index:100;}
+  .modal-box{background:#fff;border-radius:16px;padding:22px 24px;max-width:340px;width:90%;box-shadow:0 12px 32px rgba(0,0,0,.25);}
+  .modal-box .m-msg{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px;line-height:1.6;}
+  .modal-box input{width:100%;font-size:16px;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);margin-bottom:16px;}
+  .modal-box .m-btns{display:flex;gap:10px;justify-content:flex-end;}
+
+  @media (max-width:640px){
+    body{font-size:16px;}
+    .brandmark h1{font-size:20px;}
+    .block textarea{font-size:17px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brandmark">
+      <div class="logo">世華</div>
+      <div>
+        <h1>節慶簡訊規劃工具</h1>
+        <p>世華生技 · 生日／父親節／母親節／春節 簡訊管理</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="save-status" id="saveStatus"><span class="sdot"></span><span id="saveStatusText">已載入</span></span>
+      <button class="btn btn-ghost btn-sm" id="saveBtn">💾 立即儲存</button>
+      <button class="btn btn-primary btn-sm" id="exportBtn">⬇ 匯出目前分頁文字檔</button>
+    </div>
+  </header>
+
+  <div class="section-tabs" id="sectionTabs"></div>
+
+  <!-- ============ BIRTHDAY SECTION ============ -->
+  <div id="birthdaySection">
+    <div class="assump">
+      📌 已依歷史生日簡訊寫法調整：所有訊息（含B/C群）開頭都保留「生日快樂🎂」，不再只有促銷語氣。每月分為「月初提醒」與「月底催告」兩階段，各含 A/B/C 三客群；每月主打產品會依季節健康主題輪替（全捷膠原蛋白／西班牙魚油／鐵鋅維生素D3等營養素）。用詞採朋友關心的保健品牌語氣，客群鎖定 40-60 歲。內容都可直接編輯，會自動存檔（僅自己看得到）。
+    </div>
+    <details class="rules">
+      <summary>格式規則提醒（點開查看）</summary>
+      <div class="rules-body">
+        <ul>
+          <li>「世華生技」為固定發送前綴（系統會自動加在最前面，佔4字），不可刪除也不可編輯；本文請控制在 ≤ 66 字（含標點與符號），加上品牌共70字，字數即時顯示，超過會標紅。</li>
+          <li>結尾保留電話位置 ☎ 0800-655988。</li>
+          <li>需包含行動召喚：「來電訂購」或「撥打電話」。</li>
+          <li>禁止療效字眼（治療、降血糖、降血脂、消炎…）與誇大不實用語，請對照您上傳的廣告合規指引把關。</li>
+          <li>A群（1年內）→ 高金額組合＋生日禮雙重誘因；B群（1–2年）→ 中段組合＋限定稀缺感；C群（2年以上）→ 最低門檻＋簡單邀請。</li>
+        </ul>
+      </div>
+    </details>
+
+    <div class="month-rail" id="monthRail"></div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2 id="monthTitle"></h2>
+        <div class="top-actions">
+          <button class="btn btn-ghost btn-sm" id="resetBtn">↺ 還原本月預設文案</button>
+          <button class="btn btn-coral btn-sm" id="dupThemeBtn">＋ 複製本月為新主題</button>
+        </div>
+      </div>
+      <div class="theme-row">
+        <label>本月主題：</label>
+        <input class="theme-input" id="themeInput" placeholder="例如：中秋團圓開學季">
+      </div>
+      <div class="theme-tabs" id="themeTabs"></div>
+
+      <div class="blocks" id="cardsRow"></div>
+    </div>
+  </div>
+
+  <!-- ============ OCCASION SECTION (father/mother/spring/custom) ============ -->
+  <div id="occasionSection" style="display:none;">
+    <div class="assump" id="occasionNote"></div>
+    <div class="panel">
+      <div class="panel-head">
+        <h2 id="occasionTitle"></h2>
+        <div class="top-actions">
+        </div>
+      </div>
+      <div class="blocks" id="occBlocks"></div>
+    </div>
+  </div>
+
+  <!-- ============ LIBRARY (always visible reference) ============ -->
+  <div class="panel">
+    <div class="lib-head">
+      <h2>📚 歷史簡訊庫（快速參考／複製修改）</h2>
+      <div class="lib-controls">
+        <input class="search-box" id="libSearch" placeholder="搜尋關鍵字，例如：魚油、母親節…">
+      </div>
+    </div>
+    <div class="cat-filter" id="catFilter"></div>
+    <div class="lib-list" id="libList"></div>
+  </div>
+
+  <footer>世華生技內部行銷工具・僅供內部使用，非對外發布頁面</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const YEARPLAN_DEFAULT = {"01": {"title": "濕冷關節保養（全捷膠原蛋白）", "early": {"A": "生日快樂🎂濕冷關節卡卡？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "02": {"title": "情人節肌膚水潤（全捷膠原蛋白）", "early": {"A": "生日快樂🎂想肌膚水潤？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "03": {"title": "換季氣色保養（鐵）", "early": {"A": "生日快樂🎂換季氣色差？鐵營養素 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！鐵營養素 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！鐵營養素 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂鐵營養素 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "04": {"title": "春季顧關節（全捷膠原蛋白）", "early": {"A": "生日快樂🎂愛走春顧關節？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "05": {"title": "母親節肌膚保養（全捷膠原蛋白）", "early": {"A": "生日快樂🎂寵愛肌膚？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "06": {"title": "仲夏顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂仲夏顧循環？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "07": {"title": "外食族顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂常外食嗎？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "08": {"title": "父親節顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂顧心血管循環？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "09": {"title": "中秋顧免疫（維生素D3）", "early": {"A": "生日快樂🎂日照漸短？維生素D3 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！維生素D3 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！維生素D3 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂維生素D3 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "10": {"title": "秋冬顧關節（全捷膠原蛋白）", "early": {"A": "生日快樂🎂秋冬關節卡？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "11": {"title": "立冬補氣血（鐵）", "early": {"A": "生日快樂🎂立冬補氣血？鐵營養素 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！鐵營養素 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！鐵營養素 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂鐵營養素 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "12": {"title": "歲末顧免疫（維生素D3）", "early": {"A": "生日快樂🎂日照少疲倦？維生素D3 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！維生素D3 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！維生素D3 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂維生素D3 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 2送1只要$3000，只到月底來電訂購☎0800-655988"}}};
+const OCCASION_SEED = {"father": {"title": "父親節", "icon": "👨", "blocks": [{"stage": "opening", "label": "父親節月初・B級會員", "text": "💙父親節活動開跑✨全捷膠原蛋白EX $1899、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份，手刀搶購 0800-655988"}, {"stage": "opening", "label": "父親節月初・EX會員", "text": "全捷鐵粉看過來💙父親節活動開跑✨膠原蛋白5送1，再送營養素(鋅+黑瑪卡)30天份，專屬加購優惠手刀搶購 0800-655988"}, {"stage": "opening", "label": "父親節月初・終身會員", "text": "💙父親節活動開跑✨全捷膠原蛋白橘盒▶4送1$5000再送(鋅+黑瑪卡)、滿萬送西班牙魚油 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・B級會員", "text": "💙升級款全捷膠原蛋白$1899、2盒送12包、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份✨優惠進行中 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・EX會員", "text": "爸爸最愛推介▶全捷膠原蛋白精準修復$5000再送營養素鋅黑瑪卡、滿額可享860元加購多10盒！營養專員 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・終身會員", "text": "寵爸有禮▶全捷膠原蛋白橘盒銷售冠軍！5送1$6000、10送1$10000 再送守護戰鬥力-營養素鋅黑瑪卡 0800-655988"}, {"stage": "closing", "label": "父親節結束・B級會員", "text": "💙全捷膠原蛋白橘盒最划算▶10送1$10000，再送西班牙高純萃魚油30天份✨還可享860加購！ 0800-655988"}]}, "mother": {"title": "母親節", "icon": "👩", "blocks": [{"stage": "opening", "label": "母親節月初・版本1", "text": "❤母親節優惠開跑▶全捷膠原蛋白橘盒▶4送1$5000再送維生素D、滿萬送西班牙魚油 0800-655988"}, {"stage": "opening", "label": "母親節月初・版本2", "text": "❤️母親節開跑❤️全捷膠原蛋白▶3送1、10送1、滿額再送新品維生素D3、西班牙魚油 0800-655988"}, {"stage": "closing", "label": "母親節結束・最後倒數", "text": "５/8前VIP全捷膠原蛋白5送1、10送1，可享860加購還有滿額贈維生素D3或西班牙高純萃魚油！愛媽咪 0800-655988"}]}, "spring": {"title": "春節", "icon": "🧧", "blocks": [{"stage": "opening", "label": "春節月初・版本1", "text": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~2/13再送發財金！🐎馬到送健康立即訂購 0800-655988"}, {"stage": "opening", "label": "春節月初・版本2", "text": "新春開跑~2/13🎉全捷膠原蛋白EX 10送1 再享$860加購！每人再送一份紫南宮發財金🐎立即訂購 0800-655988"}, {"stage": "closing", "label": "春節結束・最後倒數", "text": "新春優惠倒數只到2/13！馬力全開靈活補滿▶全捷膠原蛋白EX 5送1、10送1再享860元加購▶再送發財金 0800-655988"}]}};
+const LIBRARY = [{"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白EX 買2送1 免費升級！健康營養專員服務 0800-655988", "cond": "", "len": 60}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白快吃完了嗎？ 壽星最省3盒3千、6盒6千 趕快來補貨囉！0800-655988", "cond": "", "len": 66}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖壽星全捷膠原蛋白免費升級EX版 最省5送1、10送1再送葉黃素  0800-655988", "cond": "", "len": 65}, {"cat": "春節月初", "date": "01/09", "content": "好冷好冷關鍵卡卡？▶全新升級版全捷膠原蛋白EX 買2送1▶再送紫南宮發財金紅包一份！🐎馬到送健康立即訂購 0800655988", "cond": "2022", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~2/13再送發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2023", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~滿額再享860加購！🐎馬到送健康立即訂購 0800-655988", "cond": "2024", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "新春開跑~2/13🎉全捷膠原蛋白EX 10送1 再享$860加購全捷!? 每人再一份紫南宮發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2025", "len": 71}, {"cat": "生日月底", "date": "01/29", "content": "免費全新升級不漲價！壽星把握機會~1/31✨全捷膠原蛋白EX🧡2送1、5送1通通有守護關鍵，錯過真的很可惜 0800655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白EX 買2送1 免費升級！🎁壽星憑簡訊來電免費索取EX體驗1包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！免費升全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1年", "len": 64}, {"cat": "春節結束", "date": "02/06", "content": "新春優惠倒數只到2/13！馬力全開靈活補滿▶全捷膠原蛋白EX 5送1、10送1再享860元加購▶再送發財金 0800-655988", "cond": "", "len": 65}, {"cat": "生日月底", "date": "02/24", "content": "壽星免費升級不漲價最後機會~2/28✨全捷膠原蛋白 2送1、5送1輕鬆逆轉靈活力，現在保養來得及馬上補貨 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/03", "content": "今日快閃▶美麗澎彈養成✨煥顏日記膠原蛋白5盒2500+388元多1盒，買2組送一盒、再送蔓越莓益生菌！ 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白EX 免費升級2送1！🎁壽星憑簡訊來電索取免費體驗包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 58}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌5袋1899元送7日體驗，3組再送30包！ 0800-655988", "cond": "", "len": 58}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌7袋$2365，2組再送30包！ 【LINE 專屬限定】ID搜尋：@shbc", "cond": "", "len": 63}, {"cat": "女神節", "date": "03/06", "content": "女神節今日快閃✨非洲芒果控斷$3333+388多1盒，再送綠茶30天份！2組再送美顏禮蔓越莓益生菌30份 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/11", "content": "今日快閃✨全捷膠原蛋白EX 2盒$3680+$388多1盒，前50通來電加碼再送關鍵力體驗組！ 立刻撥打 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/13", "content": "今日快閃▶龜鹿雙效行動自如✨龜鹿葡萄糖胺3盒$2680+388多1盒，2組再送養生四物茶30天份！快行動 0800-655988", "cond": "", "len": 64}, {"cat": "新品上市", "date": "04/01", "content": "早鳥預購限時7天！ 新品🥛常好海藻鈣益生菌！官網獨享 4/1–4/7 3袋$899、6袋送2袋$2,280 💙 www.shbc.com.tw", "cond": "", "len": 71}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星免費升級全捷膠原蛋白，5送1、10送1再送葉黃素🎁來電免費索取✨ 0800-655988", "cond": "", "len": 62}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，5送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，2送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "母親節月初", "date": "04/13", "content": "❤母親節優惠開跑▶全捷膠原蛋白 橘盒我還在▶4送1$5000再送維生素D、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "母親節月初", "date": "04/13", "content": "❤️母親節開跑❤️全捷膠原蛋白 ▶3送1、10送1、 滿額再送新品✨維生素D3、西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵葉酸、瑪卡、維D新品上市！5/8前滿額送西班牙高純萃魚油，給妳紅潤好氣色與滿滿活力 www.shbc.com.tw", "cond": "官網女", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！5/8前滿$5000送維D，滿萬送西班牙魚油。補充體力 www.shbc.com.tw", "cond": "官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "愛媽咪陽光補給★維D、鐵葉酸、鋅瑪卡強勢上市！5/8前滿額送西班牙魚油。全方位防護 0800-655988 或加LINE看更多方案", "cond": "電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！母親節優惠5/8前滿額送西班牙魚油。補充體力 0800-655988 或LINE了解更多", "cond": "電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "1-3月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3還有西班牙高純萃魚油 新品上市！ 0800-655988 或LINE了解更多", "cond": "1-3月電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【新品速報】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3營養素系列來了，還有西班牙高純萃魚油 0800-655988 或LINE了解", "cond": "1-3月電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台女", "len": 69}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台男", "len": 68}, {"cat": "新品上市", "date": "04/24", "content": "常好海藻鈣益生菌新鮮到貨！ 3 袋$909、7 袋$2019，別讓身體比心易碎！4/30 前最划算，3點前下訂宅配最快隔日收到 www.shbc.com.tw", "cond": "", "len": 79}, {"cat": "生日月底", "date": "04/27", "content": "壽星免費升級~4/30✨全捷膠原蛋白EX 2送1、5送1 逆轉靈活力，現在保養來得及！馬上補貨最划算 速撥 0800-655988", "cond": "", "len": 65}, {"cat": "母親節結束", "date": "05/05", "content": "５/8前VIP全捷膠原蛋白5送1、10送1，可享860加購還有滿額贈維生素D3或西班牙高純萃魚油！愛媽咪 0800-655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！壽星專屬免費升級全捷膠原蛋白2送1 ！🎁憑簡訊來電免費索取✨彈力進階EX體驗包🧡健康營養專員0800655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月底", "date": "05/26", "content": "壽星免費升級最後5天✨全捷膠原蛋白藍款2送1$3000、5送1$6000 保護靈活力，馬上補貨!最划算 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！壽星免費升級膠原蛋白10送1、20送3，滿2萬更享雙重好禮，老朋友別錯過！立即撥打專線 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！夏天爬山旅行趣，這個月更該好好慶祝！壽星免費升級膠原蛋白2送1、5送1，速速來電訂購 0800-655988", "cond": "1-2年", "len": 61}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂🎁西班牙高純萃魚油新上市高濃度97%，5盒只要3300，2組再送1盒。 立即撥打訂購專線 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "年度酬賓禮", "date": "06/22", "content": "○○您好：恭喜成為今年度VVIP，奉上酬賓好禮「西班牙高純萃魚油一盒」。需請您來電確認收件地址才安排寄送喔，於6/29前致電 0800-655-988 或至官方LINE確認資訊，逾期未登記視同放棄。提醒您：VVIP酬賓採年度制，明年度資格將依今年的累積消費重新計算，感謝您的支持。", "cond": "酬賓禮", "len": 140}, {"cat": "生日月底", "date": "06/25", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂✨你吃的魚油有幾趴？西班牙高純萃魚油濃度97.5%，壽星限定5盒3300▶提早保養守護循環健康 0800-655988", "cond": "2年以上", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！膠原蛋白該補貨囉💙壽星最省3盒3000、6盒6000🎁來電免費索取體驗包 0800-655988", "cond": "1-2年", "len": 55}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！全捷膠原蛋白橘+藍可混搭 壽星最省870元起▶5送1、10送1、20送3再送葉黃素+煥顏日記 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白EX $1899、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份，手刀搶購 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "全捷鐵粉看過來💙父親節活動開跑✨膠原蛋白5送1，再送營養素(鋅+黑瑪卡)30天份，專屬加購優惠手刀搶購 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白 橘盒我還在▶4送1$5000再送(鋅+黑瑪卡)、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "終身", "len": 73}, {"cat": "父親節月中", "date": "07/23", "content": "💙升級款全捷膠原蛋白$1899、2盒送12包、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份✨優惠進行中 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "爸爸最愛推介▶全捷膠原蛋白精準修復$5000再送營養素鋅黑瑪卡、滿額可享860元加購多10盒！營養專員 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "寵爸有禮▶全捷膠原蛋白橘盒銷售冠軍！5送1$6000、10送1$10000 再送守護戰鬥力-營養素鋅黑瑪卡 0800-655988", "cond": "終身", "len": 65}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "1-2年", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節結束", "date": "08/05", "content": "💙全捷膠原蛋白 橘盒最划算▶10送1$10000，再送西班牙高純萃魚油30天份✨還可享860加購！ 0800-655988", "cond": "B級", "len": 61}];
+
+</script>
+<script>
+const MONTHS = ["01","02","03","04","05","06","07","08","09","10","11","12"];
+const MONTH_LABEL = {"01":"1月","02":"2月","03":"3月","04":"4月","05":"5月","06":"6月","07":"7月","08":"8月","09":"9月","10":"10月","11":"11月","12":"12月"};
+const GROUP_LABEL = {A:"A群（1年內消費）",B:"B群（1–2年未消費）",C:"C群（2年以上未消費）"};
+const STORAGE_KEY = "shbc_sms_planner_v6";
+const PRIOR_STORAGE_KEYS = ["shbc_sms_planner_v5", "shbc_sms_planner_v4", "shbc_sms_planner_v3", "shbc_sms_planner_v2", "birthday_sms_yearplan_v1"];
+const BRAND = "世華生技";
+const MAX_LEN = 66; // 品牌名稱固定佔4字，SMS總長上限70字，本文請控制在66字內
+const STAGE_ORDER = ["opening","ongoing","closing"];
+const STAGE_LABEL = {opening:"🚀 活動開跑初期", ongoing:"📣 活動中", closing:"⏰ 即將結束通知"};
+
+let state = null;
+/* state = { birthday: {month: [themes]}, occasions: {key:{title,blocks:[{id,label,text}]}}, occasionOrder:[keys] } */
+let activeSection = "birthday"; // "birthday" | occasion key
+let activeMonth = "07";
+let activeThemeIdx = {};
+let saveTimer = null;
+
+function countLen(s){ return Array.from(s || "").length; }
+
+function stripBrandPrefix(s){
+  if(typeof s !== "string") return s;
+  return s.startsWith(BRAND) ? s.slice(BRAND.length) : s;
+}
+
+function autosize(ta){
+  ta.style.height = "auto";
+  ta.style.height = (ta.scrollHeight + 2) + "px";
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toast._tm);
+  toast._tm = setTimeout(()=>t.classList.remove('show'), 1600);
+}
+
+function setSaveStatus(text){
+  document.getElementById('saveStatusText').textContent = text;
+}
+
+/* ---------- custom modals (native confirm/prompt are unreliable in sandboxed iframes) ---------- */
+function showConfirm(message, onYes){
+  const overlay = document.createElement('div');
+  overlay.className = "modal-overlay";
+  const box = document.createElement('div');
+  box.className = "modal-box";
+  const msg = document.createElement('div');
+  msg.className = "m-msg";
+  msg.textContent = message;
+  const btnRow = document.createElement('div');
+  btnRow.className = "m-btns";
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = "btn btn-ghost";
+  cancelBtn.textContent = "取消";
+  cancelBtn.onclick = ()=> document.body.removeChild(overlay);
+  const yesBtn = document.createElement('button');
+  yesBtn.className = "btn btn-primary";
+  yesBtn.textContent = "確定";
+  yesBtn.onclick = ()=>{ document.body.removeChild(overlay); onYes(); };
+  btnRow.appendChild(cancelBtn); btnRow.appendChild(yesBtn);
+  box.appendChild(msg); box.appendChild(btnRow);
+  overlay.appendChild(box);
+  overlay.onclick = (e)=>{ if(e.target===overlay) document.body.removeChild(overlay); };
+  document.body.appendChild(overlay);
+}
+
+function showPrompt(message, defaultValue, onSubmit){
+  const overlay = document.createElement('div');
+  overlay.className = "modal-overlay";
+  const box = document.createElement('div');
+  box.className = "modal-box";
+  const msg = document.createElement('div');
+  msg.className = "m-msg";
+  msg.textContent = message;
+  const input = document.createElement('input');
+  input.value = defaultValue || "";
+  const btnRow = document.createElement('div');
+  btnRow.className = "m-btns";
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = "btn btn-ghost";
+  cancelBtn.textContent = "取消";
+  cancelBtn.onclick = ()=> document.body.removeChild(overlay);
+  const okBtn = document.createElement('button');
+  okBtn.className = "btn btn-primary";
+  okBtn.textContent = "確定";
+  okBtn.onclick = ()=>{
+    const v = input.value.trim();
+    if(!v){ input.focus(); return; }
+    document.body.removeChild(overlay);
+    onSubmit(v);
+  };
+  btnRow.appendChild(cancelBtn); btnRow.appendChild(okBtn);
+  box.appendChild(msg); box.appendChild(input); box.appendChild(btnRow);
+  overlay.appendChild(box);
+  overlay.onclick = (e)=>{ if(e.target===overlay) document.body.removeChild(overlay); };
+  document.body.appendChild(overlay);
+  setTimeout(()=>input.focus(), 30);
+}
+
+/* ---------- default data builders ---------- */
+/* NOTE: stored text fields never include the brand prefix "世華生技" —
+   it is fixed/locked and rendered separately, then prepended on copy/export. */
+function buildDefaultTheme(m){
+  const d = YEARPLAN_DEFAULT[m];
+  return {
+    id: m+"-0",
+    title: d.title,
+    early: { A: stripBrandPrefix(d.early.A), B: stripBrandPrefix(d.early.B), C: stripBrandPrefix(d.early.C) },
+    late:  { A: stripBrandPrefix(d.late.A),  B: stripBrandPrefix(d.late.B),  C: stripBrandPrefix(d.late.C) }
+  };
+}
+
+function defaultBirthdayState(){
+  const s = {};
+  MONTHS.forEach(m=>{ s[m] = [buildDefaultTheme(m)]; });
+  return s;
+}
+
+function defaultOccasionsState(){
+  const occasions = {};
+  const order = [];
+  Object.keys(OCCASION_SEED).forEach(key=>{
+    const o = OCCASION_SEED[key];
+    occasions[key] = {
+      title: o.title,
+      icon: o.icon,
+      blocks: o.blocks.map((b,i)=>({
+        id: "seed-"+key+"-"+i+"-"+Math.random().toString(36).slice(2),
+        stage: b.stage || "ongoing",
+        label: b.label,
+        text: stripBrandPrefix(b.text)
+      }))
+    };
+    order.push(key);
+  });
+  return { occasions, order };
+}
+
+function defaultState(){
+  const occ = defaultOccasionsState();
+  return { birthday: defaultBirthdayState(), occasions: occ.occasions, occasionOrder: occ.order };
+}
+
+/* strip any legacy embedded brand prefix from an already-saved state (in case it was
+   typed/saved before the fixed-prefix feature existed), tolerant of old flat A/B/C shape */
+function migrateStripBrand(s){
+  Object.keys(s.birthday||{}).forEach(m=>{
+    (s.birthday[m]||[]).forEach(th=>{
+      if(th.early && th.late){
+        ["A","B","C"].forEach(g=>{ th.early[g] = stripBrandPrefix(th.early[g]); th.late[g] = stripBrandPrefix(th.late[g]); });
+      }
+    });
+  });
+  Object.keys(s.occasions||{}).forEach(k=>{
+    (s.occasions[k].blocks||[]).forEach(b=>{
+      b.text = stripBrandPrefix(b.text);
+    });
+  });
+  return s;
+}
+
+/* extract only genuinely custom occasion tabs (added by the user via "＋ 新增節慶分頁")
+   from an older saved payload — birthday content and the fixed father/mother/spring
+   tabs are intentionally NOT carried over, so content updates always take effect. */
+function extractCustomOccasions(parsed){
+  const customs = {}; const order = [];
+  if(parsed && Array.isArray(parsed.occasionOrder)){
+    parsed.occasionOrder.forEach(k=>{
+      if(k.startsWith("custom-") && parsed.occasions && parsed.occasions[k]){
+        customs[k] = parsed.occasions[k];
+        order.push(k);
+      }
+    });
+  }
+  return { customs, order };
+}
+
+/* ---------- storage ---------- */
+async function loadState(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){ state = migrateStripBrand(JSON.parse(res.value)); return; }
+  }catch(e){ /* not found */ }
+
+  // no current-version data yet — start from fresh defaults, but preserve any
+  // genuinely custom occasion tabs the user created under an older version
+  let customs = {}, order = [];
+  for(const key of PRIOR_STORAGE_KEYS){
+    try{
+      const old = await window.storage.get(key, false);
+      if(old && old.value){
+        const parsed = JSON.parse(old.value);
+        const extracted = extractCustomOccasions(parsed);
+        customs = extracted.customs; order = extracted.order;
+        break;
+      }
+    }catch(e){ /* not found, try next */ }
+  }
+  state = defaultState();
+  order.forEach(k=>{
+    state.occasions[k] = migrateOccasionCustom(customs[k]);
+    state.occasionOrder.push(k);
+  });
+  await saveState(true);
+}
+
+function migrateOccasionCustom(occ){
+  (occ.blocks||[]).forEach(b=>{ b.text = stripBrandPrefix(b.text); if(!b.stage) b.stage = "ongoing"; });
+  return occ;
+}
+
+async function saveState(immediate){
+  clearTimeout(saveTimer);
+  const doSave = async ()=>{
+    setSaveStatus("儲存中…");
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      setSaveStatus("已儲存 · "+hh+":"+mm);
+    }catch(e){
+      console.error("儲存失敗", e);
+      setSaveStatus("⚠ 儲存失敗");
+      toast("⚠ 儲存失敗，請按「立即儲存」再試一次");
+    }
+  };
+  if(immediate){ await doSave(); }
+  else{ saveTimer = setTimeout(doSave, 500); }
+}
+
+/* ---------- section tabs ---------- */
+function renderSectionTabs(){
+  const wrap = document.getElementById('sectionTabs');
+  wrap.innerHTML = "";
+  const items = [{key:"birthday", title:"生日簡訊", icon:"🎂"}];
+  state.occasionOrder.forEach(k=>{
+    const o = state.occasions[k];
+    items.push({key:k, title:o.title, icon:o.icon || "🏷️"});
+  });
+  items.forEach(it=>{
+    const tab = document.createElement('button');
+    tab.className = "section-tab" + (activeSection===it.key ? " active":"");
+    tab.textContent = it.icon + " " + it.title;
+    tab.onclick = ()=>{ activeSection = it.key; renderSection(); };
+    wrap.appendChild(tab);
+  });
+  const addTab = document.createElement('button');
+  addTab.className = "section-tab add";
+  addTab.textContent = "＋ 新增節慶分頁";
+  addTab.onclick = ()=>{
+    showPrompt("輸入新節慶分頁名稱（例如：女神節、中秋節、新品上市）：", "", (name)=>{
+      const key = "custom-"+Date.now();
+      state.occasions[key] = { title:name, icon:"🏷️", blocks: [
+        emptyBlock("opening", "活動開跑初期"),
+        emptyBlock("ongoing", "活動中"),
+        emptyBlock("closing", "即將結束通知"),
+      ] };
+      state.occasionOrder.push(key);
+      activeSection = key;
+      saveState(true);
+      renderSection();
+      toast("已新增「"+name+"」分頁");
+    });
+  };
+  wrap.appendChild(addTab);
+}
+
+function emptyBlock(stage, label){
+  return { id:"blk-"+Date.now()+"-"+Math.random().toString(36).slice(2), stage: stage||"ongoing", label:label||"新版本", text:"祝您佳節愉快！☎0800-655988" };
+}
+
+function renderSection(){
+  renderSectionTabs();
+  const isBirthday = activeSection === "birthday";
+  document.getElementById('birthdaySection').style.display = isBirthday ? "" : "none";
+  document.getElementById('occasionSection').style.display = isBirthday ? "none" : "";
+  if(isBirthday){
+    renderMonthRail();
+    renderMonthPanel();
+  }else{
+    renderOccasionPanel();
+  }
+}
+
+/* ---------- birthday: month rail + themes ---------- */
+function currentTheme(){
+  const list = state.birthday[activeMonth];
+  const idx = activeThemeIdx[activeMonth] || 0;
+  return list[Math.min(idx, list.length-1)];
+}
+
+function renderMonthRail(){
+  const rail = document.getElementById('monthRail');
+  rail.innerHTML = "";
+  const now = new Date();
+  const curMonthStr = String(now.getMonth()+1).padStart(2,'0');
+  MONTHS.forEach(m=>{
+    const pill = document.createElement('button');
+    pill.className = "month-pill" + (m===activeMonth ? " active":"");
+    pill.innerHTML = (m===curMonthStr ? '<span class="dot"></span>':'') + MONTH_LABEL[m];
+    pill.onclick = ()=>{ activeMonth = m; renderMonthPanel(); renderMonthRail(); };
+    rail.appendChild(pill);
+  });
+}
+
+function renderThemeTabs(){
+  const wrap = document.getElementById('themeTabs');
+  wrap.innerHTML = "";
+  const list = state.birthday[activeMonth];
+  const idx = activeThemeIdx[activeMonth] || 0;
+  list.forEach((th, i)=>{
+    const tab = document.createElement('div');
+    tab.className = "theme-tab" + (i===idx?" active":"");
+    const label = document.createElement('span');
+    label.textContent = th.title || ("主題 "+(i+1));
+    label.onclick = ()=>{ activeThemeIdx[activeMonth] = i; renderMonthPanel(); renderThemeTabs(); };
+    tab.appendChild(label);
+    if(list.length>1){
+      const x = document.createElement('button');
+      x.className = "x"; x.type = "button"; x.textContent = "✕ 刪除"; x.title = "刪除此主題";
+      x.onclick = (e)=>{
+        e.stopPropagation();
+        showConfirm("刪除主題「"+(th.title||"未命名")+"」？此動作無法復原。", ()=>{
+          list.splice(i,1);
+          if(activeThemeIdx[activeMonth] >= list.length) activeThemeIdx[activeMonth] = list.length-1;
+          saveState(true); renderMonthPanel(); renderThemeTabs();
+          toast("已刪除此主題");
+        });
+      };
+      tab.appendChild(x);
+    }
+    wrap.appendChild(tab);
+  });
+}
+
+const BIRTH_STAGE_ORDER = ["early","late"];
+const BIRTH_STAGE_LABEL = {early:"📅 月初提醒（首次發送）", late:"⏰ 月底催告（最後機會）"};
+
+function renderMonthPanel(){
+  document.getElementById('monthTitle').textContent = MONTH_LABEL[activeMonth] + " 壽星生日簡訊";
+  const th = currentTheme();
+  const themeInput = document.getElementById('themeInput');
+  themeInput.value = th.title;
+  themeInput.oninput = ()=>{ th.title = themeInput.value; renderThemeTabs(); saveState(); };
+
+  renderThemeTabs();
+
+  const cardsRow = document.getElementById('cardsRow');
+  cardsRow.innerHTML = "";
+
+  BIRTH_STAGE_ORDER.forEach(stage=>{
+    const stageWrap = document.createElement('div');
+    stageWrap.style.cssText = "margin-bottom:6px;";
+    const head = document.createElement('h4');
+    head.textContent = BIRTH_STAGE_LABEL[stage];
+    head.style.cssText = "margin:10px 0 10px;font-size:16px;font-weight:900;color:var(--ink-soft);padding-top:8px;border-top:1.5px dashed var(--line);";
+    stageWrap.appendChild(head);
+
+    ["A","B","C"].forEach(g=>{
+      const card = document.createElement('div');
+      card.className = "block group"+g;
+      const title = document.createElement('div');
+      title.className = "block-title";
+      title.innerHTML = `<h3>${GROUP_LABEL[g]}</h3>`;
+      card.appendChild(title);
+      card.appendChild(brandPrefixEl());
+
+      const ta = document.createElement('textarea');
+      ta.value = th[stage][g];
+      ta.oninput = ()=>{
+        th[stage][g] = ta.value;
+        setCharCount(cc, ta.value);
+        autosize(ta);
+        saveState();
+      };
+      card.appendChild(ta);
+
+      const foot = document.createElement('div');
+      foot.className = "block-foot";
+      const cc = document.createElement('span');
+      cc.className = "charcount";
+      foot.appendChild(cc);
+
+      const btns = document.createElement('div');
+      btns.className = "block-btns";
+      const copyBtn = document.createElement('button');
+      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（含品牌）";
+      copyBtn.onclick = ()=>{
+        navigator.clipboard.writeText(BRAND + ta.value).then(()=>{
+          copyBtn.textContent = "已複製 ✓"; copyBtn.classList.add('copied');
+          setTimeout(()=>{ copyBtn.textContent="複製（含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
+        });
+      };
+      btns.appendChild(copyBtn);
+      foot.appendChild(btns);
+      card.appendChild(foot);
+
+      stageWrap.appendChild(card);
+      setCharCount(cc, th[stage][g]);
+      autosize(ta);
+    });
+
+    cardsRow.appendChild(stageWrap);
+  });
+}
+
+function brandPrefixEl(){
+  const el = document.createElement('div');
+  el.className = "brand-prefix";
+  el.innerHTML = `<span class="lock">🔒</span><span>${BRAND}</span>`;
+  el.title = "「"+BRAND+"」為固定發送前綴，不可刪除／不可編輯";
+  return el;
+}
+
+function charCountLabel(text){
+  const n = countLen(text);
+  return n + " / " + MAX_LEN + " 字（含品牌共 " + (n + BRAND.length) + " 字）";
+}
+
+function setCharCount(el, text){
+  const n = countLen(text);
+  el.textContent = charCountLabel(text);
+  el.classList.toggle('over', n>MAX_LEN);
+}
+
+document.getElementById('dupThemeBtn').onclick = ()=>{
+  const th = currentTheme();
+  const copy = {
+    id: activeMonth+"-"+Date.now(),
+    title: (th.title||"主題") + "（複製）",
+    early: { A: th.early.A, B: th.early.B, C: th.early.C },
+    late:  { A: th.late.A,  B: th.late.B,  C: th.late.C }
+  };
+  state.birthday[activeMonth].push(copy);
+  activeThemeIdx[activeMonth] = state.birthday[activeMonth].length - 1;
+  saveState(true);
+  renderMonthPanel();
+  toast("已複製為新主題，開始編輯吧！");
+};
+
+document.getElementById('resetBtn').onclick = ()=>{
+  showConfirm("將本月還原為系統預設文案，確定嗎？現有編輯內容將被覆蓋。", ()=>{
+    state.birthday[activeMonth] = [buildDefaultTheme(activeMonth)];
+    activeThemeIdx[activeMonth] = 0;
+    saveState(true);
+    renderMonthPanel();
+    toast("已還原本月預設文案");
+  });
+};
+
+/* ---------- occasion panel (father/mother/spring/custom) — grouped by stage ---------- */
+function renderOccasionPanel(){
+  const occ = state.occasions[activeSection];
+  document.getElementById('occasionTitle').textContent = occ.title + " 簡訊";
+  document.getElementById('occasionNote').textContent =
+    "📌 「" + occ.title + "」內容已直接對應您上傳的歷史簡訊，依「活動開跑初期／活動中／即將結束通知」三階段分類（部分階段若過去無對應歷史簡訊會留空，可自行新增），可直接修改。「"+BRAND+"」為固定前綴不可刪除，本文請控制在 "+MAX_LEN+" 字內。";
+
+  const wrap = document.getElementById('occBlocks');
+  wrap.innerHTML = "";
+
+  STAGE_ORDER.forEach(stage=>{
+    const section = document.createElement('div');
+    section.style.cssText = "margin-bottom:6px;";
+
+    const head = document.createElement('div');
+    head.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin:10px 0 10px;padding-top:6px;border-top:1.5px dashed var(--line);";
+    const h4 = document.createElement('h4');
+    h4.textContent = STAGE_LABEL[stage];
+    h4.style.cssText = "margin:10px 0 0;font-size:16px;font-weight:900;color:var(--ink-soft);";
+    head.appendChild(h4);
+    const addBtn = document.createElement('button');
+    addBtn.className = "btn btn-ghost btn-sm";
+    addBtn.textContent = "＋ 新增此階段版本";
+    addBtn.onclick = ()=>{
+      occ.blocks.push(emptyBlock(stage, STAGE_LABEL[stage].replace(/^\S+\s/,"")));
+      saveState(true);
+      renderOccasionPanel();
+      toast("已新增版本");
+    };
+    head.appendChild(addBtn);
+    section.appendChild(head);
+
+    const stageBlocks = occ.blocks.filter(b=> (b.stage||"ongoing") === stage);
+    if(stageBlocks.length===0){
+      const empty = document.createElement('div');
+      empty.style.cssText = "color:var(--ink-soft);padding:6px 4px 4px;font-size:14px;";
+      empty.textContent = "目前這個階段還沒有版本，點上方「＋ 新增此階段版本」開始撰寫。";
+      section.appendChild(empty);
+    }
+
+    stageBlocks.forEach(blk=>{
+      const i = occ.blocks.indexOf(blk);
+      const card = document.createElement('div');
+      card.className = "block groupX";
+
+      const title = document.createElement('div');
+      title.className = "block-title";
+      const labelInput = document.createElement('input');
+      labelInput.className = "block-label-input";
+      labelInput.value = blk.label || "版本";
+      labelInput.oninput = ()=>{ blk.label = labelInput.value; saveState(); };
+      title.appendChild(labelInput);
+
+      const stageSelect = document.createElement('select');
+      stageSelect.style.cssText = "font-size:13px;font-weight:700;padding:6px 8px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);";
+      STAGE_ORDER.forEach(s=>{
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = STAGE_LABEL[s];
+        if(s === stage) opt.selected = true;
+        stageSelect.appendChild(opt);
+      });
+      stageSelect.onchange = ()=>{
+        blk.stage = stageSelect.value;
+        saveState(true);
+        renderOccasionPanel();
+        toast("已移動到「"+STAGE_LABEL[blk.stage]+"」");
+      };
+      title.appendChild(stageSelect);
+
+      const delBtn = document.createElement('button');
+      delBtn.className = "icon-btn del";
+      delBtn.textContent = "✕ 刪除";
+      delBtn.onclick = ()=>{
+        showConfirm("刪除這則「"+(blk.label||"未命名")+"」？此動作無法復原。", ()=>{
+          occ.blocks.splice(i,1);
+          saveState(true);
+          renderOccasionPanel();
+          toast("已刪除");
+        });
+      };
+      title.appendChild(delBtn);
+      card.appendChild(title);
+      card.appendChild(brandPrefixEl());
+
+      const ta = document.createElement('textarea');
+      ta.value = blk.text;
+      ta.oninput = ()=>{
+        blk.text = ta.value;
+        cc.textContent = charCountLabel(ta.value);
+        cc.classList.toggle('over', countLen(ta.value) > MAX_LEN);
+        autosize(ta);
+        saveState();
+      };
+      card.appendChild(ta);
+
+      const foot = document.createElement('div');
+      foot.className = "block-foot";
+      const cc = document.createElement('span');
+      cc.className = "charcount";
+      cc.textContent = charCountLabel(blk.text);
+      cc.classList.toggle('over', countLen(blk.text) > MAX_LEN);
+      foot.appendChild(cc);
+
+      const btns = document.createElement('div');
+      btns.className = "block-btns";
+      const copyBtn = document.createElement('button');
+      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（含品牌）";
+      copyBtn.onclick = ()=>{
+        navigator.clipboard.writeText(BRAND + ta.value).then(()=>{
+          copyBtn.textContent = "已複製 ✓"; copyBtn.classList.add('copied');
+          setTimeout(()=>{ copyBtn.textContent="複製（含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
+        });
+      };
+      btns.appendChild(copyBtn);
+      foot.appendChild(btns);
+      card.appendChild(foot);
+
+      section.appendChild(card);
+      autosize(ta);
+    });
+
+    wrap.appendChild(section);
+  });
+}
+
+/* ---------- manual save + export ---------- */
+document.getElementById('saveBtn').onclick = async ()=>{
+  await saveState(true);
+  toast("已儲存！");
+};
+
+document.getElementById('exportBtn').onclick = ()=>{
+  let lines = [];
+  if(activeSection === "birthday"){
+    lines.push("世華生技｜壽星生日簡訊年度規劃", "");
+    MONTHS.forEach(m=>{
+      state.birthday[m].forEach(th=>{
+        lines.push("─────────────────");
+        lines.push(`【${MONTH_LABEL[m]}｜${th.title}】`);
+        BIRTH_STAGE_ORDER.forEach(stage=>{
+          lines.push(BIRTH_STAGE_LABEL[stage]+"：");
+          ["A","B","C"].forEach(g=>{
+            const t = th[stage][g];
+            lines.push(`　${GROUP_LABEL[g]}（本文${countLen(t)}字／含品牌${countLen(t)+BRAND.length}字）：${BRAND}${t}`);
+          });
+        });
+      });
+    });
+  }else{
+    const occ = state.occasions[activeSection];
+    lines.push(`世華生技｜${occ.title}簡訊`, "");
+    STAGE_ORDER.forEach(stage=>{
+      const stageBlocks = occ.blocks.filter(b=> (b.stage||"ongoing") === stage);
+      if(stageBlocks.length===0) return;
+      lines.push("═════ " + STAGE_LABEL[stage] + " ═════");
+      stageBlocks.forEach(blk=>{
+        lines.push("─────────────────");
+        lines.push(`【${blk.label}】（本文${countLen(blk.text)}字／含品牌${countLen(blk.text)+BRAND.length}字）`);
+        lines.push(BRAND + blk.text);
+      });
+    });
+  }
+  lines.push("─────────────────");
+  const filename = activeSection === "birthday" ? "世華生技_壽星簡訊年度規劃.txt" : `世華生技_${state.occasions[activeSection].title}簡訊.txt`;
+  const blob = new Blob([lines.join("\n")], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast("已下載文字檔");
+};
+
+/* ---------- library (always visible) ---------- */
+let libCatActive = "全部";
+function renderLibrary(){
+  const cats = ["全部", ...Array.from(new Set(LIBRARY.map(r=>r.cat)))];
+  const catWrap = document.getElementById('catFilter');
+  catWrap.innerHTML = "";
+  cats.forEach(c=>{
+    const chip = document.createElement('button');
+    chip.className = "cat-chip" + (c===libCatActive ? " active":"");
+    chip.textContent = c;
+    chip.onclick = ()=>{ libCatActive = c; renderLibraryList(); renderLibrary(); };
+    catWrap.appendChild(chip);
+  });
+  renderLibraryList();
+}
+
+function renderLibraryList(){
+  const q = document.getElementById('libSearch').value.trim().toLowerCase();
+  const list = document.getElementById('libList');
+  list.innerHTML = "";
+  const filtered = LIBRARY.filter(r=>{
+    const matchCat = libCatActive === "全部" || r.cat === libCatActive;
+    const matchQ = !q || r.content.toLowerCase().includes(q) || (r.cat||"").toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  if(filtered.length===0){
+    list.innerHTML = '<div style="color:var(--ink-soft);padding:20px;text-align:center;">沒有符合的簡訊，換個關鍵字試試</div>';
+    return;
+  }
+  filtered.forEach(r=>{
+    const row = document.createElement('div');
+    row.className = "lib-row";
+    const txt = document.createElement('div');
+    txt.className = "txt";
+    const cond = r.cond ? `<span class="badge">${r.cond}</span>` : "";
+    txt.innerHTML = `<div class="meta"><span class="badge date">${r.date||"—"}</span><span class="badge">${r.cat||"未分類"}</span>${cond}</div><div class="content">${r.content}</div>`;
+    row.appendChild(txt);
+    const useBtn = document.createElement('button');
+    useBtn.className = "icon-btn use-btn";
+    useBtn.textContent = "複製文字";
+    useBtn.onclick = ()=>{
+      navigator.clipboard.writeText(r.content).then(()=>{
+        useBtn.textContent = "已複製 ✓"; useBtn.classList.add('copied');
+        setTimeout(()=>{ useBtn.textContent="複製文字"; useBtn.classList.remove('copied'); }, 1200);
+      });
+    };
+    row.appendChild(useBtn);
+    list.appendChild(row);
+  });
+}
+document.getElementById('libSearch').oninput = renderLibraryList;
+
+/* ---------- boot ---------- */
+(async function init(){
+  setSaveStatus("載入中…");
+  await loadState();
+  const now = new Date();
+  activeMonth = String(now.getMonth()+1).padStart(2,'0');
+  setSaveStatus("已載入");
+  renderSection();
+  renderLibrary();
+})();
+</script>
+</body>
+</html>
