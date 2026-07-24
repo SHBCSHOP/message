@@ -35,7 +35,7 @@
     line-height:1.6;
     padding:28px 20px 80px;
   }
-  .wrap{max-width:980px;margin:0 auto;}
+  .wrap{max-width:1080px;margin:0 auto;}
 
   header.top{
     display:flex;justify-content:space-between;align-items:flex-end;
@@ -115,42 +115,65 @@
   }
   .theme-tab .x:hover{color:#fff;background:var(--danger);}
 
-  /* content blocks — full-width, stacked top to bottom (matches library rows) */
-  .blocks{display:flex;flex-direction:column;gap:14px;margin-top:18px;}
-  .block{
-    width:100%;border-radius:16px;padding:18px 20px;border:1.5px solid var(--line);background:var(--cream);
-    border-left:6px solid var(--line);
-    display:flex;flex-direction:column;gap:10px;
+  /* content blocks — phone-mockup cards, up to 3 per row left-to-right */
+  .blocks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px 18px;margin-top:18px;align-items:start;}
+  @media (max-width:860px){ .blocks{grid-template-columns:repeat(2,minmax(0,1fr));} }
+  @media (max-width:560px){ .blocks{grid-template-columns:1fr;} }
+
+  .block{ display:flex;flex-direction:column;gap:10px; }
+
+  /* the phone frame */
+  .phone-card{
+    width:100%;max-width:280px;margin:0 auto;border-radius:26px;
+    background:#e7e7ea;border:1px solid #d7d7da;box-shadow:var(--shadow);overflow:hidden;
   }
-  .block.groupA{border-left-color:var(--coral);}
-  .block.groupB{border-left-color:var(--gold);}
-  .block.groupC{border-left-color:var(--teal);}
-  .block.groupX{border-left-color:var(--plum);}
-  .block-title{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-  .block-title h3{margin:0;font-size:16.5px;font-weight:900;}
-  .brand-prefix{
-    display:flex;align-items:center;gap:8px;background:var(--teal-deep);color:#fff;
-    font-weight:900;font-size:15px;padding:9px 14px;border-radius:12px 12px 0 0;
-    letter-spacing:.5px;margin-bottom:-6px;width:fit-content;
+  .phone-statusbar{
+    background:#1c1c1e;color:#fff;font-size:11px;font-weight:800;letter-spacing:.3px;
+    padding:8px 16px 6px;display:flex;justify-content:space-between;align-items:center;
   }
-  .brand-prefix .lock{font-size:13px;opacity:.85;}
+  .phone-statusbar .icons{opacity:.9;font-size:11px;}
+  .phone-screen{ background:#e7e7ea;padding:14px 12px 18px;min-height:150px; }
+  .bubble{
+    background:#ffffff;border-radius:18px;border-bottom-left-radius:5px;
+    padding:12px 13px;box-shadow:0 1px 3px rgba(0,0,0,.10);
+  }
+  .bubble .brand-line{
+    font-weight:900;font-size:14px;margin-bottom:4px;display:flex;align-items:center;gap:5px;
+  }
+  .block.groupA .bubble .brand-line{color:var(--coral);}
+  .block.groupB .bubble .brand-line{color:#a5790f;}
+  .block.groupC .bubble .brand-line{color:var(--teal-deep);}
+  .block.groupX .bubble .brand-line{color:var(--plum);}
+  .bubble textarea{
+    border:none;background:transparent;padding:0;width:100%;resize:vertical;
+    font-family:inherit;font-size:14.5px;line-height:1.55;color:#1a1a1a;font-weight:500;
+    min-height:88px;overflow:hidden;
+  }
+  .bubble textarea:focus{outline:none;}
+  .bubble:focus-within{box-shadow:0 0 0 2px var(--teal);}
+
+  /* caption below the phone frame — label / stage / char count / actions */
+  .block-caption{
+    background:var(--paper);border:1.5px solid var(--line);border-radius:14px;
+    padding:12px 14px;display:flex;flex-direction:column;gap:9px;
+  }
+  .block-caption.groupA{border-top:4px solid var(--coral);}
+  .block-caption.groupB{border-top:4px solid var(--gold);}
+  .block-caption.groupC{border-top:4px solid var(--teal);}
+  .block-caption.groupX{border-top:4px solid var(--plum);}
+  .block-title{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+  .block-title h3{margin:0;font-size:15.5px;font-weight:900;}
   .block-label-input{
-    flex:1;min-width:160px;font-size:14.5px;font-weight:700;padding:7px 12px;border-radius:9px;
-    border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);
+    flex:1;min-width:120px;font-size:14px;font-weight:700;padding:7px 10px;border-radius:9px;
+    border:1.5px solid var(--line);background:var(--cream);color:var(--ink-soft);
   }
-  .block textarea{
-    width:100%;min-height:90px;resize:vertical;font-size:19px;line-height:1.65;
-    font-family:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);
-    background:var(--paper);color:var(--ink);font-weight:500;overflow:hidden;
-  }
-  .block textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
   .block-foot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-  .charcount{font-size:14px;font-weight:800;color:var(--teal-deep);}
+  .charcount{font-size:13px;font-weight:800;color:var(--teal-deep);}
   .charcount.over{color:var(--danger);}
-  .block-btns{display:flex;gap:8px;}
+  .block-btns{display:flex;gap:8px;flex-wrap:wrap;}
   .icon-btn{
     border:none;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;
-    padding:7px 12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--ink-soft);
+    padding:7px 11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-soft);
   }
   .icon-btn:hover{border-color:var(--teal);color:var(--teal-deep);}
   .icon-btn.copied{background:var(--teal);color:#fff;border-color:var(--teal);}
@@ -231,7 +254,6 @@
     <div class="brandmark">
       <div class="logo">message</div>
       <div>
-        <h1>簡訊工具</h1>
         <p>生日／父親節／母親節／春節</p>
       </div>
     </div>
@@ -278,7 +300,7 @@
       </div>
       <div class="theme-tabs" id="themeTabs"></div>
 
-      <div class="blocks" id="cardsRow"></div>
+      <div id="cardsRow"></div>
     </div>
   </div>
 
@@ -291,7 +313,7 @@
         <div class="top-actions">
         </div>
       </div>
-      <div class="blocks" id="occBlocks"></div>
+      <div id="occBlocks"></div>
     </div>
   </div>
 
@@ -315,7 +337,7 @@
 <script>
 const YEARPLAN_DEFAULT = {"01": {"title": "濕冷關節保養（全捷膠原蛋白）", "early": {"A": "生日快樂🎂濕冷關節卡卡？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "02": {"title": "情人節肌膚水潤（全捷膠原蛋白）", "early": {"A": "生日快樂🎂想肌膚水潤？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "03": {"title": "換季氣色保養（鐵）", "early": {"A": "生日快樂🎂換季氣色差？鐵營養素 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！鐵營養素 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！鐵營養素 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂鐵營養素 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "04": {"title": "春季顧關節（全捷膠原蛋白）", "early": {"A": "生日快樂🎂愛走春顧關節？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "05": {"title": "母親節肌膚保養（全捷膠原蛋白）", "early": {"A": "生日快樂🎂寵愛肌膚？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "06": {"title": "仲夏顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂仲夏顧循環？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "07": {"title": "外食族顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂常外食嗎？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "08": {"title": "父親節顧循環（西班牙魚油）", "early": {"A": "生日快樂🎂顧心血管循環？西班牙魚油 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！西班牙魚油 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！西班牙魚油 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂西班牙魚油 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！西班牙魚油 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "09": {"title": "中秋顧免疫（維生素D3）", "early": {"A": "生日快樂🎂日照漸短？維生素D3 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！維生素D3 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！維生素D3 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂維生素D3 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "10": {"title": "秋冬顧關節（全捷膠原蛋白）", "early": {"A": "生日快樂🎂秋冬關節卡？全捷膠原蛋白 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！全捷膠原蛋白 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂全捷膠原蛋白 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！全捷膠原蛋白 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "11": {"title": "立冬補氣血（鐵）", "early": {"A": "生日快樂🎂立冬補氣血？鐵營養素 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！鐵營養素 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！鐵營養素 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂鐵營養素 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！鐵營養素 2送1只要$3000，只到月底來電訂購☎0800-655988"}}, "12": {"title": "歲末顧免疫（維生素D3）", "early": {"A": "生日快樂🎂日照少疲倦？維生素D3 升級10送1、20送3送雙重好禮，來電訂購☎0800-655988", "B": "生日快樂🎂好久不見，想您了！維生素D3 5送1只要$6000，限時開放來電訂購☎0800-655988", "C": "生日快樂🎂好久不見，想您了！維生素D3 2送1只要$3000，老朋友回歸價來電訂購☎0800-655988"}, "late": {"A": "生日禮只剩3天🎂維生素D3 升級10送1、20送3，錯過可惜來電訂購☎0800-655988", "B": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 5送1只要$6000，只到月底來電訂購☎0800-655988", "C": "生日禮只剩3天🎂好久不見，最後機會！維生素D3 2送1只要$3000，只到月底來電訂購☎0800-655988"}}};
 const OCCASION_SEED = {"father": {"title": "父親節", "icon": "👨", "blocks": [{"stage": "opening", "label": "父親節月初・B級會員", "text": "💙父親節活動開跑✨全捷膠原蛋白EX $1899、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份，手刀搶購 0800-655988"}, {"stage": "opening", "label": "父親節月初・EX會員", "text": "全捷鐵粉看過來💙父親節活動開跑✨膠原蛋白5送1，再送營養素(鋅+黑瑪卡)30天份，專屬加購優惠手刀搶購 0800-655988"}, {"stage": "opening", "label": "父親節月初・終身會員", "text": "💙父親節活動開跑✨全捷膠原蛋白橘盒▶4送1$5000再送(鋅+黑瑪卡)、滿萬送西班牙魚油 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・B級會員", "text": "💙升級款全捷膠原蛋白$1899、2盒送12包、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份✨優惠進行中 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・EX會員", "text": "爸爸最愛推介▶全捷膠原蛋白精準修復$5000再送營養素鋅黑瑪卡、滿額可享860元加購多10盒！營養專員 0800-655988"}, {"stage": "ongoing", "label": "父親節月中・終身會員", "text": "寵爸有禮▶全捷膠原蛋白橘盒銷售冠軍！5送1$6000、10送1$10000 再送守護戰鬥力-營養素鋅黑瑪卡 0800-655988"}, {"stage": "closing", "label": "父親節結束・B級會員", "text": "💙全捷膠原蛋白橘盒最划算▶10送1$10000，再送西班牙高純萃魚油30天份✨還可享860加購！ 0800-655988"}]}, "mother": {"title": "母親節", "icon": "👩", "blocks": [{"stage": "opening", "label": "母親節月初・版本1", "text": "❤母親節優惠開跑▶全捷膠原蛋白橘盒▶4送1$5000再送維生素D、滿萬送西班牙魚油 0800-655988"}, {"stage": "opening", "label": "母親節月初・版本2", "text": "❤️母親節開跑❤️全捷膠原蛋白▶3送1、10送1、滿額再送新品維生素D3、西班牙魚油 0800-655988"}, {"stage": "closing", "label": "母親節結束・最後倒數", "text": "５/8前VIP全捷膠原蛋白5送1、10送1，可享860加購還有滿額贈維生素D3或西班牙高純萃魚油！愛媽咪 0800-655988"}]}, "spring": {"title": "春節", "icon": "🧧", "blocks": [{"stage": "opening", "label": "春節月初・版本1", "text": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~2/13再送發財金！🐎馬到送健康立即訂購 0800-655988"}, {"stage": "opening", "label": "春節月初・版本2", "text": "新春開跑~2/13🎉全捷膠原蛋白EX 10送1 再享$860加購！每人再送一份紫南宮發財金🐎立即訂購 0800-655988"}, {"stage": "closing", "label": "春節結束・最後倒數", "text": "新春優惠倒數只到2/13！馬力全開靈活補滿▶全捷膠原蛋白EX 5送1、10送1再享860元加購▶再送發財金 0800-655988"}]}};
-const LIBRARY = [{"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白EX 買2送1 免費升級！健康營養專員服務 0800-655988", "cond": "", "len": 60}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白快吃完了嗎？ 壽星最省3盒3千、6盒6千 趕快來補貨囉！0800-655988", "cond": "", "len": 66}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖壽星全捷膠原蛋白免費升級EX版 最省5送1、10送1再送葉黃素  0800-655988", "cond": "", "len": 65}, {"cat": "春節月初", "date": "01/09", "content": "好冷好冷關鍵卡卡？▶全新升級版全捷膠原蛋白EX 買2送1▶再送紫南宮發財金紅包一份！🐎馬到送健康立即訂購 0800655988", "cond": "2022", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~2/13再送發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2023", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~滿額再享860加購！🐎馬到送健康立即訂購 0800-655988", "cond": "2024", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "新春開跑~2/13🎉全捷膠原蛋白EX 10送1 再享$860加購全捷!? 每人再一份紫南宮發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2025", "len": 71}, {"cat": "生日月底", "date": "01/29", "content": "免費全新升級不漲價！壽星把握機會~1/31✨全捷膠原蛋白EX🧡2送1、5送1通通有守護關鍵，錯過真的很可惜 0800655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白EX 買2送1 免費升級！🎁壽星憑簡訊來電免費索取EX體驗1包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！免費升全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1年", "len": 64}, {"cat": "春節結束", "date": "02/06", "content": "新春優惠倒數只到2/13！馬力全開靈活補滿▶全捷膠原蛋白EX 5送1、10送1再享860元加購▶再送發財金 0800-655988", "cond": "", "len": 65}, {"cat": "生日月底", "date": "02/24", "content": "壽星免費升級不漲價最後機會~2/28✨全捷膠原蛋白 2送1、5送1輕鬆逆轉靈活力，現在保養來得及馬上補貨 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/03", "content": "今日快閃▶美麗澎彈養成✨煥顏日記膠原蛋白5盒2500+388元多1盒，買2組送一盒、再送蔓越莓益生菌！ 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白EX 免費升級2送1！🎁壽星憑簡訊來電索取免費體驗包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 58}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌5袋1899元送7日體驗，3組再送30包！ 0800-655988", "cond": "", "len": 58}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌7袋$2365，2組再送30包！ 【LINE 專屬限定】ID搜尋：@shbc", "cond": "", "len": 63}, {"cat": "女神節", "date": "03/06", "content": "女神節今日快閃✨非洲芒果控斷$3333+388多1盒，再送綠茶30天份！2組再送美顏禮蔓越莓益生菌30份 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/11", "content": "今日快閃✨全捷膠原蛋白EX 2盒$3680+$388多1盒，前50通來電加碼再送關鍵力體驗組！ 立刻撥打 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/13", "content": "今日快閃▶龜鹿雙效行動自如✨龜鹿葡萄糖胺3盒$2680+388多1盒，2組再送養生四物茶30天份！快行動 0800-655988", "cond": "", "len": 64}, {"cat": "新品上市", "date": "04/01", "content": "早鳥預購限時7天！ 新品🥛常好海藻鈣益生菌！官網獨享 4/1–4/7 3袋$899、6袋送2袋$2,280 💙 www.shbc.com.tw", "cond": "", "len": 71}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星免費升級全捷膠原蛋白，5送1、10送1再送葉黃素🎁來電免費索取✨ 0800-655988", "cond": "", "len": 62}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，5送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，2送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "母親節月初", "date": "04/13", "content": "❤母親節優惠開跑▶全捷膠原蛋白 橘盒我還在▶4送1$5000再送維生素D、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "母親節月初", "date": "04/13", "content": "❤️母親節開跑❤️全捷膠原蛋白 ▶3送1、10送1、 滿額再送新品✨維生素D3、西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵葉酸、瑪卡、維D新品上市！5/8前滿額送西班牙高純萃魚油，給妳紅潤好氣色與滿滿活力 www.shbc.com.tw", "cond": "官網女", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！5/8前滿$5000送維D，滿萬送西班牙魚油。補充體力 www.shbc.com.tw", "cond": "官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "愛媽咪陽光補給★維D、鐵葉酸、鋅瑪卡強勢上市！5/8前滿額送西班牙魚油。全方位防護 0800-655988 或加LINE看更多方案", "cond": "電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！母親節優惠5/8前滿額送西班牙魚油。補充體力 0800-655988 或LINE了解更多", "cond": "電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "1-3月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3還有西班牙高純萃魚油 新品上市！ 0800-655988 或LINE了解更多", "cond": "1-3月電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【新品速報】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3營養素系列來了，還有西班牙高純萃魚油 0800-655988 或LINE了解", "cond": "1-3月電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台女", "len": 69}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台男", "len": 68}, {"cat": "新品上市", "date": "04/24", "content": "常好海藻鈣益生菌新鮮到貨！ 3 袋$909、7 袋$2019，別讓身體比心易碎！4/30 前最划算，3點前下訂宅配最快隔日收到 www.shbc.com.tw", "cond": "", "len": 79}, {"cat": "生日月底", "date": "04/27", "content": "壽星免費升級~4/30✨全捷膠原蛋白EX 2送1、5送1 逆轉靈活力，現在保養來得及！馬上補貨最划算 速撥 0800-655988", "cond": "", "len": 65}, {"cat": "母親節結束", "date": "05/05", "content": "５/8前VIP全捷膠原蛋白5送1、10送1，可享860加購還有滿額贈維生素D3或西班牙高純萃魚油！愛媽咪 0800-655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！壽星專屬免費升級全捷膠原蛋白2送1 ！🎁憑簡訊來電免費索取✨彈力進階EX體驗包🧡健康營養專員0800655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月底", "date": "05/26", "content": "壽星免費升級最後5天✨全捷膠原蛋白藍款2送1$3000、5送1$6000 保護靈活力，馬上補貨!最划算 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！壽星免費升級膠原蛋白10送1、20送3，滿2萬更享雙重好禮，老朋友別錯過！立即撥打專線 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！夏天爬山旅行趣，這個月更該好好慶祝！壽星免費升級膠原蛋白2送1、5送1，速速來電訂購 0800-655988", "cond": "1-2年", "len": 61}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂🎁西班牙高純萃魚油新上市高濃度97%，5盒只要3300，2組再送1盒。 立即撥打訂購專線 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "年度酬賓禮", "date": "06/22", "content": "○○您好：恭喜成為今年度VVIP，奉上酬賓好禮「西班牙高純萃魚油一盒」。需請您來電確認收件地址才安排寄送喔，於6/29前致電 0800-655-988 或至官方LINE確認資訊，逾期未登記視同放棄。提醒您：VVIP酬賓採年度制，明年度資格將依今年的累積消費重新計算，感謝您的支持。", "cond": "酬賓禮", "len": 140}, {"cat": "生日月底", "date": "06/25", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂✨你吃的魚油有幾趴？西班牙高純萃魚油濃度97.5%，壽星限定5盒3300▶提早保養守護循環健康 0800-655988", "cond": "2年以上", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！膠原蛋白該補貨囉💙壽星最省3盒3000、6盒6000🎁來電免費索取體驗包 0800-655988", "cond": "1-2年", "len": 55}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！全捷膠原蛋白橘+藍可混搭 壽星最省870元起▶5送1、10送1、20送3再送葉黃素+煥顏日記 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白EX $1899、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份，手刀搶購 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "全捷鐵粉看過來💙父親節活動開跑✨膠原蛋白5送1，再送營養素(鋅+黑瑪卡)30天份，專屬加購優惠手刀搶購 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白 橘盒我還在▶4送1$5000再送(鋅+黑瑪卡)、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "終身", "len": 73}, {"cat": "父親節月中", "date": "07/23", "content": "💙升級款全捷膠原蛋白$1899、2盒送12包、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份✨優惠進行中 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "爸爸最愛推介▶全捷膠原蛋白精準修復$5000再送營養素鋅黑瑪卡、滿額可享860元加購多10盒！營養專員 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "寵爸有禮▶全捷膠原蛋白橘盒銷售冠軍！5送1$6000、10送1$10000 再送守護戰鬥力-營養素鋅黑瑪卡 0800-655988", "cond": "終身", "len": 65}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "1-2年", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節結束", "date": "08/05", "content": "💙全捷膠原蛋白 橘盒最划算▶10送1$10000，再送西班牙高純萃魚油30天份✨還可享860加購！ 0800-655988", "cond": "B級", "len": 61}];
+const LIBRARY = [{"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白EX 買2送1 免費升級！健康營養專員服務 0800-655988", "cond": "", "len": 60}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖全捷膠原蛋白快吃完了嗎？ 壽星最省3盒3千、6盒6千 趕快來補貨囉！0800-655988", "cond": "", "len": 66}, {"cat": "生日月初", "date": "01/02", "content": "世華生技祝您生日快樂！✨馬到金銀福星高照💖壽星全捷膠原蛋白免費升級EX版 最省5送1、10送1再送葉黃素  0800-655988", "cond": "", "len": 65}, {"cat": "春節月初", "date": "01/09", "content": "好冷好冷關鍵卡卡？▶全新升級版全捷膠原蛋白EX 買2送1▶再送紫南宮發財金紅包一份！🐎馬到送健康立即訂購 0800655988", "cond": "2022", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~2/13再送發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2023", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "冷到緊繃卡關啦！你需要保養靈活的🩵全捷膠原蛋白EX 買3送1~滿額再享860加購！🐎馬到送健康立即訂購 0800-655988", "cond": "2024", "len": 63}, {"cat": "春節月初", "date": "01/09", "content": "新春開跑~2/13🎉全捷膠原蛋白EX 10送1 再享$860加購全捷!? 每人再一份紫南宮發財金！🐎馬到送健康立即訂購 0800-655988", "cond": "2025", "len": 71}, {"cat": "生日月底", "date": "01/29", "content": "免費全新升級不漲價！壽星把握機會~1/31✨全捷膠原蛋白EX🧡2送1、5送1通通有守護關鍵，錯過真的很可惜 0800655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白EX 買2送1 免費升級！🎁壽星憑簡訊來電免費索取EX體驗1包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "02/04", "content": "祝您生日快樂！免費升全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電免費索取EX體驗1包 0800-655988", "cond": "1年", "len": 64}, {"cat": "春節結束", "date": "02/06", "content": "新春優惠倒數只到2/13！馬力全開靈活補滿▶全捷膠原蛋白EX 5送1、10送1再享860元加購▶再送發財金 0800-655988", "cond": "", "len": 65}, {"cat": "生日月底", "date": "02/24", "content": "壽星免費升級不漲價最後機會~2/28✨全捷膠原蛋白 2送1、5送1輕鬆逆轉靈活力，現在保養來得及馬上補貨 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/03", "content": "今日快閃▶美麗澎彈養成✨煥顏日記膠原蛋白5盒2500+388元多1盒，買2組送一盒、再送蔓越莓益生菌！ 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白EX 免費升級2送1！🎁壽星憑簡訊來電索取免費體驗包🧡健康營養專員 0800-655988", "cond": "2年以上", "len": 58}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "03/04", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌5袋1899元送7日體驗，3組再送30包！ 0800-655988", "cond": "", "len": 58}, {"cat": "女神節", "date": "03/05", "content": "女神節今日一日快閃▶溫柔守護私密✨常好蔓越莓益生菌7袋$2365，2組再送30包！ 【LINE 專屬限定】ID搜尋：@shbc", "cond": "", "len": 63}, {"cat": "女神節", "date": "03/06", "content": "女神節今日快閃✨非洲芒果控斷$3333+388多1盒，再送綠茶30天份！2組再送美顏禮蔓越莓益生菌30份 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/11", "content": "今日快閃✨全捷膠原蛋白EX 2盒$3680+$388多1盒，前50通來電加碼再送關鍵力體驗組！ 立刻撥打 0800-655988", "cond": "", "len": 64}, {"cat": "女神節", "date": "03/13", "content": "今日快閃▶龜鹿雙效行動自如✨龜鹿葡萄糖胺3盒$2680+388多1盒，2組再送養生四物茶30天份！快行動 0800-655988", "cond": "", "len": 64}, {"cat": "新品上市", "date": "04/01", "content": "早鳥預購限時7天！ 新品🥛常好海藻鈣益生菌！官網獨享 4/1–4/7 3袋$899、6袋送2袋$2,280 💙 www.shbc.com.tw", "cond": "", "len": 71}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星免費升級全捷膠原蛋白，5送1、10送1再送葉黃素🎁來電免費索取✨ 0800-655988", "cond": "", "len": 62}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，5送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "生日月初", "date": "04/07", "content": "預告新品即將推出！祝您生日快樂！壽星當月免費升級全捷膠原蛋白，2送1 超划算🎁來電免費索取✨ 0800-655988", "cond": "", "len": 58}, {"cat": "母親節月初", "date": "04/13", "content": "❤母親節優惠開跑▶全捷膠原蛋白 橘盒我還在▶4送1$5000再送維生素D、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "母親節月初", "date": "04/13", "content": "❤️母親節開跑❤️全捷膠原蛋白 ▶3送1、10送1、 滿額再送新品✨維生素D3、西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "", "len": 70}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵葉酸、瑪卡、維D新品上市！5/8前滿額送西班牙高純萃魚油，給妳紅潤好氣色與滿滿活力 www.shbc.com.tw", "cond": "官網女", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！5/8前滿$5000送維D，滿萬送西班牙魚油。補充體力 www.shbc.com.tw", "cond": "官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "愛媽咪陽光補給★維D、鐵葉酸、鋅瑪卡強勢上市！5/8前滿額送西班牙魚油。全方位防護 0800-655988 或加LINE看更多方案", "cond": "電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅瑪卡、維D、鐵葉酸新品登場！母親節優惠5/8前滿額送西班牙魚油。補充體力 0800-655988 或LINE了解更多", "cond": "電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "1-3月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3還有西班牙高純萃魚油 新品上市！ 0800-655988 或LINE了解更多", "cond": "1-3月電台男", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【新品速報】鋅+黑瑪卡、鐵+葉酸+維生素C、維生素D3營養素系列來了，還有西班牙高純萃魚油 0800-655988 或LINE了解", "cond": "1-3月電台女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網女", "len": 65}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 www.shbc.com.tw", "cond": "4-5月官網男", "len": 64}, {"cat": "新品上市", "date": "04/17", "content": "【寵愛女神】鐵+葉酸+維生素C、鋅+黑瑪卡、維生素D3新品上市！紅潤好氣色與滿滿活力！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台女", "len": 69}, {"cat": "新品上市", "date": "04/17", "content": "【男力覺醒】鋅+黑瑪卡增強體力支持生殖機能！維生素D3、鐵+葉酸+維生素C 新上市！登錄發票再抽 0800-655988 或LINE了解", "cond": "4-5月電台男", "len": 68}, {"cat": "新品上市", "date": "04/24", "content": "常好海藻鈣益生菌新鮮到貨！ 3 袋$909、7 袋$2019，別讓身體比心易碎！4/30 前最划算，3點前下訂宅配最快隔日收到 www.shbc.com.tw", "cond": "", "len": 79}, {"cat": "生日月底", "date": "04/27", "content": "壽星免費升級~4/30✨全捷膠原蛋白EX 2送1、5送1 逆轉靈活力，現在保養來得及！馬上補貨最划算 速撥 0800-655988", "cond": "", "len": 65}, {"cat": "母親節結束", "date": "05/05", "content": "５/8前VIP全捷膠原蛋白5送1、10送1，可享860加購還有滿額贈維生素D3或西班牙高純萃魚油！愛媽咪 0800-655988", "cond": "", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！壽星專屬免費升級全捷膠原蛋白2送1 ！🎁憑簡訊來電免費索取✨彈力進階EX體驗包🧡健康營養專員0800655988", "cond": "2年以上", "len": 63}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！全捷膠原蛋白快吃完了嗎？補貨最省3盒3000、6盒6000🎁壽星憑簡訊來電免費索取新體驗包 0800-655988", "cond": "1-2年", "len": 64}, {"cat": "生日月初", "date": "05/05", "content": "祝您生日快樂！免費升級全捷膠原蛋白EX，最省5送1、10送1再送葉黃素🎁壽星憑簡訊來電索取免費體驗包 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月底", "date": "05/26", "content": "壽星免費升級最後5天✨全捷膠原蛋白藍款2送1$3000、5送1$6000 保護靈活力，馬上補貨!最划算 0800-655988", "cond": "", "len": 63}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！壽星免費升級膠原蛋白10送1、20送3，滿2萬更享雙重好禮，老朋友別錯過！立即撥打專線 0800-655988", "cond": "1年", "len": 62}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂！夏天爬山旅行趣，這個月更該好好慶祝！壽星免費升級膠原蛋白2送1、5送1，速速來電訂購 0800-655988", "cond": "1-2年", "len": 61}, {"cat": "生日月初", "date": "06/03", "content": "祝您生日快樂🎁西班牙高純萃魚油新上市高濃度97%，5盒只要3300，2組再送1盒。 立即撥打訂購專線 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "年度酬賓禮", "date": "06/22", "content": "○○您好：恭喜成為今年度VVIP，奉上酬賓好禮「西班牙高純萃魚油一盒」。需請您來電確認收件地址才安排寄送喔，於6/29前致電 0800-655-988 或至官方LINE確認資訊，逾期未登記視同放棄。提醒您：VVIP酬賓採年度制，明年度資格將依今年的累積消費重新計算，感謝您的支持。", "cond": "酬賓禮", "len": 140}, {"cat": "生日月底", "date": "06/25", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂✨你吃的魚油有幾趴？西班牙高純萃魚油濃度97.5%，壽星限定5盒3300▶提早保養守護循環健康 0800-655988", "cond": "2年以上", "len": 65}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！膠原蛋白該補貨囉💙壽星最省3盒3000、6盒6000🎁來電免費索取體驗包 0800-655988", "cond": "1-2年", "len": 55}, {"cat": "生日月初", "date": "07/01", "content": "祝您生日快樂！全捷膠原蛋白橘+藍可混搭 壽星最省870元起▶5送1、10送1、20送3再送葉黃素+煥顏日記 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白EX $1899、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份，手刀搶購 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "全捷鐵粉看過來💙父親節活動開跑✨膠原蛋白5送1，再送營養素(鋅+黑瑪卡)30天份，專屬加購優惠手刀搶購 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月初", "date": "07/13", "content": "💙父親節活動開跑✨全捷膠原蛋白 橘盒我還在▶4送1$5000再送(鋅+黑瑪卡)、滿萬送西班牙高純萃魚油，還可享860加購！ 0800-655988", "cond": "終身", "len": 73}, {"cat": "父親節月中", "date": "07/23", "content": "💙升級款全捷膠原蛋白$1899、2盒送12包、3盒送1盒再加贈營養素(鋅+黑瑪卡)30天份✨優惠進行中 0800-655988", "cond": "B級", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "爸爸最愛推介▶全捷膠原蛋白精準修復$5000再送營養素鋅黑瑪卡、滿額可享860元加購多10盒！營養專員 0800-655988", "cond": "EX", "len": 63}, {"cat": "父親節月中", "date": "07/23", "content": "寵爸有禮▶全捷膠原蛋白橘盒銷售冠軍！5送1$6000、10送1$10000 再送守護戰鬥力-營養素鋅黑瑪卡 0800-655988", "cond": "終身", "len": 65}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "2年以上", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "生日快樂✨常常外食嗎?，推薦您一定要補充西班牙高純萃魚油，壽星限定一盒只要660 ▶保養守護循環健康 0800-655988", "cond": "1-2年", "len": 62}, {"cat": "生日月底", "date": "07/28", "content": "壽星專屬優惠倒數~6/30✨全捷膠原蛋白免費升級862起、西班牙高純萃魚油5盒3300▶從日常開始在意自己 0800-655988", "cond": "1年", "len": 65}, {"cat": "父親節結束", "date": "08/05", "content": "💙全捷膠原蛋白 橘盒最划算▶10送1$10000，再送西班牙高純萃魚油30天份✨還可享860加購！ 0800-655988", "cond": "B級", "len": 61}];
 
 </script>
 <script>
@@ -659,6 +681,34 @@ function renderThemeTabs(){
 const BIRTH_STAGE_ORDER = ["early","late"];
 const BIRTH_STAGE_LABEL = {early:"📅 月初提醒（首次發送）", late:"⏰ 月底催告（最後機會）"};
 
+function buildPhoneCard(){
+  const phone = document.createElement('div');
+  phone.className = "phone-card";
+
+  const statusbar = document.createElement('div');
+  statusbar.className = "phone-statusbar";
+  statusbar.innerHTML = '<span>9:41</span><span class="icons">●●● 📶 🔋</span>';
+  phone.appendChild(statusbar);
+
+  const screen = document.createElement('div');
+  screen.className = "phone-screen";
+  const bubble = document.createElement('div');
+  bubble.className = "bubble";
+
+  const brandLine = document.createElement('div');
+  brandLine.className = "brand-line";
+  brandLine.innerHTML = `<span>🔒</span><span>${BRAND}</span>`;
+  brandLine.title = "「"+BRAND+"」為固定發送前綴，不可刪除／不可編輯";
+  bubble.appendChild(brandLine);
+
+  const ta = document.createElement('textarea');
+  bubble.appendChild(ta);
+
+  screen.appendChild(bubble);
+  phone.appendChild(screen);
+  return { phone, ta };
+}
+
 function renderMonthPanel(){
   document.getElementById('monthTitle').textContent = MONTH_LABEL[activeMonth] + " 壽星生日簡訊";
   const th = currentTheme();
@@ -679,16 +729,15 @@ function renderMonthPanel(){
     head.style.cssText = "margin:10px 0 10px;font-size:16px;font-weight:900;color:var(--ink-soft);padding-top:8px;border-top:1.5px dashed var(--line);";
     stageWrap.appendChild(head);
 
-    ["A","B","C"].forEach(g=>{
-      const card = document.createElement('div');
-      card.className = "block group"+g;
-      const title = document.createElement('div');
-      title.className = "block-title";
-      title.innerHTML = `<h3>${GROUP_LABEL[g]}</h3>`;
-      card.appendChild(title);
-      card.appendChild(brandPrefixEl());
+    const grid = document.createElement('div');
+    grid.className = "blocks";
+    stageWrap.appendChild(grid);
 
-      const ta = document.createElement('textarea');
+    ["A","B","C"].forEach(g=>{
+      const block = document.createElement('div');
+      block.className = "block group"+g;
+
+      const { phone, ta } = buildPhoneCard();
       ta.value = th[stage][g];
       ta.oninput = ()=>{
         th[stage][g] = ta.value;
@@ -696,7 +745,15 @@ function renderMonthPanel(){
         autosize(ta);
         saveState();
       };
-      card.appendChild(ta);
+      block.appendChild(phone);
+
+      const caption = document.createElement('div');
+      caption.className = "block-caption group"+g;
+
+      const title = document.createElement('div');
+      title.className = "block-title";
+      title.innerHTML = `<h3>${GROUP_LABEL[g]}</h3>`;
+      caption.appendChild(title);
 
       const foot = document.createElement('div');
       foot.className = "block-foot";
@@ -716,23 +773,16 @@ function renderMonthPanel(){
       };
       btns.appendChild(copyBtn);
       foot.appendChild(btns);
-      card.appendChild(foot);
+      caption.appendChild(foot);
 
-      stageWrap.appendChild(card);
+      block.appendChild(caption);
+      grid.appendChild(block);
       setCharCount(cc, th[stage][g]);
       autosize(ta);
     });
 
     cardsRow.appendChild(stageWrap);
   });
-}
-
-function brandPrefixEl(){
-  const el = document.createElement('div');
-  el.className = "brand-prefix";
-  el.innerHTML = `<span class="lock">🔒</span><span>${BRAND}</span>`;
-  el.title = "「"+BRAND+"」為固定發送前綴，不可刪除／不可編輯";
-  return el;
 }
 
 function charCountLabel(text){
@@ -811,10 +861,27 @@ function renderOccasionPanel(){
       section.appendChild(empty);
     }
 
+    const grid = document.createElement('div');
+    grid.className = "blocks";
+    section.appendChild(grid);
+
     stageBlocks.forEach(blk=>{
       const i = occ.blocks.indexOf(blk);
-      const card = document.createElement('div');
-      card.className = "block groupX";
+      const block = document.createElement('div');
+      block.className = "block groupX";
+
+      const { phone, ta } = buildPhoneCard();
+      ta.value = blk.text;
+      ta.oninput = ()=>{
+        blk.text = ta.value;
+        setCharCount(cc, ta.value);
+        autosize(ta);
+        saveState();
+      };
+      block.appendChild(phone);
+
+      const caption = document.createElement('div');
+      caption.className = "block-caption groupX";
 
       const title = document.createElement('div');
       title.className = "block-title";
@@ -824,8 +891,23 @@ function renderOccasionPanel(){
       labelInput.oninput = ()=>{ blk.label = labelInput.value; saveState(); };
       title.appendChild(labelInput);
 
+      const delBtn = document.createElement('button');
+      delBtn.className = "icon-btn del";
+      delBtn.textContent = "✕";
+      delBtn.title = "刪除這則";
+      delBtn.onclick = ()=>{
+        showConfirm("刪除這則「"+(blk.label||"未命名")+"」？此動作無法復原。", ()=>{
+          occ.blocks.splice(i,1);
+          saveState(true);
+          renderOccasionPanel();
+          toast("已刪除");
+        });
+      };
+      title.appendChild(delBtn);
+      caption.appendChild(title);
+
       const stageSelect = document.createElement('select');
-      stageSelect.style.cssText = "font-size:13px;font-weight:700;padding:6px 8px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink-soft);";
+      stageSelect.style.cssText = "width:100%;font-size:13px;font-weight:700;padding:6px 8px;border-radius:8px;border:1.5px solid var(--line);background:var(--cream);color:var(--ink-soft);";
       STAGE_ORDER.forEach(s=>{
         const opt = document.createElement('option');
         opt.value = s; opt.textContent = STAGE_LABEL[s];
@@ -838,40 +920,12 @@ function renderOccasionPanel(){
         renderOccasionPanel();
         toast("已移動到「"+STAGE_LABEL[blk.stage]+"」");
       };
-      title.appendChild(stageSelect);
-
-      const delBtn = document.createElement('button');
-      delBtn.className = "icon-btn del";
-      delBtn.textContent = "✕ 刪除";
-      delBtn.onclick = ()=>{
-        showConfirm("刪除這則「"+(blk.label||"未命名")+"」？此動作無法復原。", ()=>{
-          occ.blocks.splice(i,1);
-          saveState(true);
-          renderOccasionPanel();
-          toast("已刪除");
-        });
-      };
-      title.appendChild(delBtn);
-      card.appendChild(title);
-      card.appendChild(brandPrefixEl());
-
-      const ta = document.createElement('textarea');
-      ta.value = blk.text;
-      ta.oninput = ()=>{
-        blk.text = ta.value;
-        cc.textContent = charCountLabel(ta.value);
-        cc.classList.toggle('over', countLen(ta.value) > MAX_LEN);
-        autosize(ta);
-        saveState();
-      };
-      card.appendChild(ta);
+      caption.appendChild(stageSelect);
 
       const foot = document.createElement('div');
       foot.className = "block-foot";
       const cc = document.createElement('span');
       cc.className = "charcount";
-      cc.textContent = charCountLabel(blk.text);
-      cc.classList.toggle('over', countLen(blk.text) > MAX_LEN);
       foot.appendChild(cc);
 
       const btns = document.createElement('div');
@@ -886,9 +940,11 @@ function renderOccasionPanel(){
       };
       btns.appendChild(copyBtn);
       foot.appendChild(btns);
-      card.appendChild(foot);
+      caption.appendChild(foot);
 
-      section.appendChild(card);
+      block.appendChild(caption);
+      grid.appendChild(block);
+      setCharCount(cc, blk.text);
       autosize(ta);
     });
 
