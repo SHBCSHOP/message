@@ -6,7 +6,6 @@
 <title>message</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --cream:#F7F5EF;
@@ -241,7 +240,7 @@
 <body>
   <script>
 (function() {
-  var correctPassword = "888";
+  var correctPassword = "0800655988";
   var input = prompt("請輸入密碼：");
   if (input !== correctPassword) {
     document.body.innerHTML = "<h2 style='text-align:center;margin-top:100px;'>密碼錯誤</h2>";
@@ -363,7 +362,6 @@ const GOOGLE_CLIENT_ID = "372376769486-dlp4k547u97gat0rv68jnsqpgdhf7ndh.apps.goo
 const GOOGLE_DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 
 let gAccessToken = null;
-let gTokenClient = null;
 let gSignedIn = false;
 const fileIdCache = {}; // key -> Drive fileId, cached per session
 
@@ -447,26 +445,41 @@ window.storage = {
 };
 
 function initGoogleAuth(){
-  gTokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_CLIENT_ID,
-    scope: GOOGLE_DRIVE_SCOPE,
-    callback: async (resp)=>{
-      if(resp.error){ setAuthUI(false, "登入失敗，請再試一次"); return; }
-      gAccessToken = resp.access_token;
-      setAuthUI(true, "已登入（共用資料）");
-      toast("已登入 Google，正在載入共用資料…");
-      await bootAfterAuth();
-    }
-  });
+  const REDIRECT_URI = window.location.origin + window.location.pathname;
+
+  function buildAuthUrl(prompt){
+    const params = new URLSearchParams({
+      client_id: GOOGLE_CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      response_type: "token",
+      scope: GOOGLE_DRIVE_SCOPE,
+      include_granted_scopes: "true"
+    });
+    if(prompt) params.set("prompt", prompt);
+    return "https://accounts.google.com/o/oauth2/v2/auth?" + params.toString();
+  }
+
   document.getElementById('googleSignInBtn').onclick = ()=>{
-    // manual click always shows the Google chooser/consent screen so the person can
-    // pick or confirm the shared company account
-    gTokenClient.requestAccessToken({ prompt: "select_account" });
+    // full-page redirect to Google's sign-in page instead of a popup — popups get
+    // blocked unreliably by browsers, a full navigation always works
+    window.location.href = buildAuthUrl(gAccessToken ? "select_account" : "");
   };
-  // try a silent sign-in first (works if the browser already has an active session
-  // with the shared account and consent was granted before). If it can't complete
-  // silently, nothing happens here — the person just clicks the sign-in button.
-  try{ gTokenClient.requestAccessToken({ prompt: "" }); }catch(e){ /* ignore, wait for manual click */ }
+
+  // after Google redirects back, the access token comes back in the URL's hash
+  // fragment, e.g. #access_token=...&token_type=Bearer&expires_in=3599
+  if(window.location.hash.includes("access_token")){
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const token = hashParams.get("access_token");
+    if(token){
+      gAccessToken = token;
+      setAuthUI(true, "已登入（共用資料）");
+      // clean the token out of the URL bar so it isn't left visible/bookmarked
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      bootAfterAuth();
+      return;
+    }
+  }
+  setAuthUI(false, "尚未登入 Google");
 }
 
 const STORAGE_KEY = "shbc_sms_planner_v6";
