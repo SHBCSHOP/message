@@ -240,10 +240,17 @@
 <body>
   <script>
 (function() {
-  var correctPassword = "888";
+  var correctPassword = "0800655988";
   var input = prompt("請輸入密碼：");
   if (input !== correctPassword) {
-    document.body.innerHTML = "<h2 style='text-align:center;margin-top:100px;'>密碼錯誤</h2>";
+    // document.open()/write()/close() discards the rest of the page that the
+    // browser hasn't parsed yet, so nothing below this (header, tabs, saved
+    // message content, scripts) ever gets added to the page. Just setting
+    // innerHTML here did NOT stop that — the browser kept parsing and
+    // appending the rest of the original HTML afterward regardless.
+    document.open();
+    document.write("<h2 style='text-align:center;margin-top:100px;font-family:sans-serif;'>密碼錯誤</h2>");
+    document.close();
     throw new Error("驗證失敗");
   }
 })();
