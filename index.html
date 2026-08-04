@@ -488,6 +488,7 @@ const MAX_LEN = 65; // 品牌名稱固定佔4字，簡訊平台實測會再固�
 const PLATFORM_OFFSET = 1; // 簡訊平台實測：不論內容為何，平台顯示字數都會比原生字串長度多1字（可能是平台內建計入1個結尾符號），這裡固定加回去以跟平台字數同步
 const STAGE_ORDER = ["opening","ongoing","closing"];
 const STAGE_LABEL = {opening:"🚀 活動開跑初期", ongoing:"📣 活動中", closing:"⏰ 即將結束通知"};
+const STAGE_BG = {opening:"#E7F2E6", ongoing:"#E6F2F1", closing:"#F2E6ED"};
 
 let state = null;
 /* state = { birthday: {month: [themes]}, occasions: {key:{title,blocks:[{id,label,text}]}}, occasionOrder:[keys] } */
@@ -793,6 +794,7 @@ function renderMonthRail(){
 
 const BIRTH_STAGE_ORDER = ["early","late"];
 const BIRTH_STAGE_LABEL = {early:"📅 月初提醒（首次發送）", late:"⏰ 月底催告（最後機會）"};
+const BIRTH_STAGE_BG = {early:"#E7F2E6", late:"#F2E6ED"};
 
 function buildPhoneCard(){
   const phone = document.createElement('div');
@@ -834,10 +836,10 @@ function renderMonthPanel(){
 
   BIRTH_STAGE_ORDER.forEach(stage=>{
     const stageWrap = document.createElement('div');
-    stageWrap.style.cssText = "margin-bottom:6px;";
+    stageWrap.style.cssText = `margin-bottom:16px;background:${BIRTH_STAGE_BG[stage]};border-radius:16px;padding:14px 14px 8px;`;
     const head = document.createElement('h4');
     head.textContent = BIRTH_STAGE_LABEL[stage];
-    head.style.cssText = "margin:10px 0 10px;font-size:16px;font-weight:900;color:var(--ink-soft);padding-top:8px;border-top:1.5px dashed var(--line);";
+    head.style.cssText = "margin:0 0 10px;font-size:16px;font-weight:900;color:var(--ink-soft);";
     stageWrap.appendChild(head);
 
     const grid = document.createElement('div');
@@ -926,13 +928,13 @@ function renderOccasionPanel(){
 
   STAGE_ORDER.forEach(stage=>{
     const section = document.createElement('div');
-    section.style.cssText = "margin-bottom:6px;";
+    section.style.cssText = `margin-bottom:16px;background:${STAGE_BG[stage]};border-radius:16px;padding:14px 14px 8px;`;
 
     const head = document.createElement('div');
-    head.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin:10px 0 10px;padding-top:6px;border-top:1.5px dashed var(--line);";
+    head.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin:0 0 10px;flex-wrap:wrap;gap:8px;";
     const h4 = document.createElement('h4');
     h4.textContent = STAGE_LABEL[stage];
-    h4.style.cssText = "margin:10px 0 0;font-size:16px;font-weight:900;color:var(--ink-soft);";
+    h4.style.cssText = "margin:0;font-size:16px;font-weight:900;color:var(--ink-soft);";
     head.appendChild(h4);
     const addBtn = document.createElement('button');
     addBtn.className = "btn btn-ghost btn-sm";
