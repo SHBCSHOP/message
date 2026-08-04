@@ -495,7 +495,27 @@ let activeMonth = "07";
 let activeThemeIdx = {};
 let saveTimer = null;
 
-function countLen(s){ return Array.from(s || "").length; }
+function countLen(s){
+  // 與簡訊平台算法一致：一般字元算1字，emoji（表情符號）算2字
+  // （簡訊平台是以雙位元組計費，emoji 一律以2字計算；
+  //  單純用 Array.from(s).length 會把 emoji 誤算成1字，導致字數比平台少算）
+  if(!s) return 0;
+  let n = 0;
+  for(const ch of Array.from(s)){
+    n += isEmojiChar(ch) ? 2 : 1;
+  }
+  return n;
+}
+
+function isEmojiChar(ch){
+  try{
+    return /\p{Extended_Pictographic}/u.test(ch);
+  }catch(e){
+    // 舊瀏覽器不支援 Unicode property escapes 時的保底判斷
+    const cp = ch.codePointAt(0);
+    return (cp >= 0x1F300 && cp <= 0x1FAFF) || (cp >= 0x2600 && cp <= 0x27BF);
+  }
+}
 
 function stripBrandPrefix(s){
   if(typeof s !== "string") return s;
