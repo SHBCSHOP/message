@@ -484,7 +484,8 @@ function initGoogleAuth(){
 const STORAGE_KEY = "shbc_sms_planner_v6";
 const PRIOR_STORAGE_KEYS = ["shbc_sms_planner_v5", "shbc_sms_planner_v4", "shbc_sms_planner_v3", "shbc_sms_planner_v2", "birthday_sms_yearplan_v1"];
 const BRAND = "世華生技";
-const MAX_LEN = 66; // 品牌名稱固定佔4字，SMS總長上限70字，本文請控制在66字內
+const MAX_LEN = 65; // 品牌名稱固定佔4字，簡訊平台實測會再固定多算1字，SMS總長上限70字，本文請控制在65字內
+const PLATFORM_OFFSET = 1; // 簡訊平台實測：不論內容為何，平台顯示字數都會比原生字串長度多1字（可能是平台內建計入1個結尾符號），這裡固定加回去以跟平台字數同步
 const STAGE_ORDER = ["opening","ongoing","closing"];
 const STAGE_LABEL = {opening:"🚀 活動開跑初期", ongoing:"📣 活動中", closing:"⏰ 即將結束通知"};
 
@@ -496,25 +497,10 @@ let activeThemeIdx = {};
 let saveTimer = null;
 
 function countLen(s){
-  // 與簡訊平台算法一致：一般字元算1字，emoji（表情符號）算2字
-  // （簡訊平台是以雙位元組計費，emoji 一律以2字計算；
-  //  單純用 Array.from(s).length 會把 emoji 誤算成1字，導致字數比平台少算）
-  if(!s) return 0;
-  let n = 0;
-  for(const ch of Array.from(s)){
-    n += isEmojiChar(ch) ? 2 : 1;
-  }
-  return n;
-}
-
-function isEmojiChar(ch){
-  try{
-    return /\p{Extended_Pictographic}/u.test(ch);
-  }catch(e){
-    // 舊瀏覽器不支援 Unicode property escapes 時的保底判斷
-    const cp = ch.codePointAt(0);
-    return (cp >= 0x1F300 && cp <= 0x1FAFF) || (cp >= 0x2600 && cp <= 0x27BF);
-  }
+  // 直接用 JS 原生字串長度（UTF-16 code unit）。
+  // 這樣像 💙 這種需要用2個編碼單位表示的emoji會自動被算成2字，
+  // 跟簡訊平台的計算方式一致（實測驗證過，不需要額外判斷emoji種類）。
+  return (s || "").length;
 }
 
 function stripBrandPrefix(s){
@@ -912,7 +898,7 @@ function renderMonthPanel(){
 
 function charCountLabel(text){
   const n = countLen(text);
-  return n + " / " + MAX_LEN + " 字（含品牌共 " + (n + BRAND.length) + " 字）";
+  return "含品牌共 " + (n + BRAND.length + PLATFORM_OFFSET) + " 字";
 }
 
 function setCharCount(el, text){
@@ -1079,7 +1065,7 @@ document.getElementById('exportBtn').onclick = ()=>{
           lines.push(BIRTH_STAGE_LABEL[stage]+"：");
           ["A","B","C"].forEach(g=>{
             const t = th[stage][g];
-            lines.push(`　${GROUP_LABEL[g]}（本文${countLen(t)}字／含品牌${countLen(t)+BRAND.length}字）：${BRAND}${t}`);
+            lines.push(`　${GROUP_LABEL[g]}（本文${countLen(t)}字／含品牌${countLen(t)+BRAND.length+PLATFORM_OFFSET}字）：${BRAND}${t}`);
           });
         });
       });
@@ -1093,7 +1079,7 @@ document.getElementById('exportBtn').onclick = ()=>{
       lines.push("═════ " + STAGE_LABEL[stage] + " ═════");
       stageBlocks.forEach(blk=>{
         lines.push("─────────────────");
-        lines.push(`【${blk.label}】（本文${countLen(blk.text)}字／含品牌${countLen(blk.text)+BRAND.length}字）`);
+        lines.push(`【${blk.label}】（本文${countLen(blk.text)}字／含品牌${countLen(blk.text)+BRAND.length+PLATFORM_OFFSET}字）`);
         lines.push(BRAND + blk.text);
       });
     });
