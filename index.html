@@ -240,7 +240,15 @@
   <script>
 (function() {
   var correctPassword = "0800655988";
+  // only ask once per browser tab: once the right password is entered, remember
+  // it for this tab via sessionStorage so that Google sign-in's full-page
+  // redirect (which reloads this whole page) doesn't trigger the prompt again
+  if (sessionStorage.getItem("shbc_pwd_ok") === "1") { return; }
   var input = prompt("請輸入密碼：");
+  if (input === correctPassword) {
+    sessionStorage.setItem("shbc_pwd_ok", "1");
+    return;
+  }
   if (input !== correctPassword) {
     // document.open()/write()/close() discards the rest of the page that the
     // browser hasn't parsed yet, so nothing below this (header, tabs, saved
@@ -516,7 +524,15 @@ let activeMonth = "07";
 let activeThemeIdx = {};
 let saveTimer = null;
 
-function countLen(s){ return Array.from(s || "").length; }
+function countLen(s){
+  // Counts UTF-16 code units (what SMS gateways like 三竹簡訊 actually bill by),
+  // not Unicode code points. Most emoji (🌟🎉😀...) sit outside the Basic
+  // Multilingual Plane and are encoded as a surrogate pair — two UTF-16 units —
+  // so they count as 2 "characters" here, matching real SMS character counting.
+  // (Plain .length already does this; we keep this helper for a single place
+  // to adjust counting rules from, in case 三竹's own count differs in future.)
+  return (s || "").length;
+}
 
 function stripBrandPrefix(s){
   if(typeof s !== "string") return s;
@@ -922,11 +938,12 @@ function renderMonthPanel(){
       const btns = document.createElement('div');
       btns.className = "block-btns";
       const copyBtn = document.createElement('button');
-      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（含品牌）";
+      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（不含品牌）";
       copyBtn.onclick = ()=>{
-        navigator.clipboard.writeText(BRAND + ta.value).then(()=>{
+        // only the body is copied — 三竹簡訊那邊會自動帶入發送品牌名稱，不需要重複貼上
+        navigator.clipboard.writeText(ta.value).then(()=>{
           copyBtn.textContent = "已複製 ✓"; copyBtn.classList.add('copied');
-          setTimeout(()=>{ copyBtn.textContent="複製（含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
+          setTimeout(()=>{ copyBtn.textContent="複製（不含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
         });
       };
       btns.appendChild(copyBtn);
@@ -1089,11 +1106,12 @@ function renderOccasionPanel(){
       const btns = document.createElement('div');
       btns.className = "block-btns";
       const copyBtn = document.createElement('button');
-      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（含品牌）";
+      copyBtn.className = "icon-btn"; copyBtn.textContent = "複製（不含品牌）";
       copyBtn.onclick = ()=>{
-        navigator.clipboard.writeText(BRAND + ta.value).then(()=>{
+        // only the body is copied — 三竹簡訊那邊會自動帶入發送品牌名稱，不需要重複貼上
+        navigator.clipboard.writeText(ta.value).then(()=>{
           copyBtn.textContent = "已複製 ✓"; copyBtn.classList.add('copied');
-          setTimeout(()=>{ copyBtn.textContent="複製（含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
+          setTimeout(()=>{ copyBtn.textContent="複製（不含品牌）"; copyBtn.classList.remove('copied'); }, 1200);
         });
       };
       btns.appendChild(copyBtn);
