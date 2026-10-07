@@ -240,26 +240,28 @@
   <script>
 (function() {
   var correctPassword = "0800655988";
-  // only ask once per browser tab: once the right password is entered, remember
-  // it for this tab via sessionStorage so that Google sign-in's full-page
-  // redirect (which reloads this whole page) doesn't trigger the prompt again
-  if (sessionStorage.getItem("shbc_pwd_ok") === "1") { return; }
+  // only ask once per device/browser: once the right password is entered,
+  // remember it in localStorage (survives page reloads AND the full-page
+  // redirect to Google and back — unlike sessionStorage, which some browsers
+  // can behave inconsistently with across a cross-origin round trip).
+  var alreadyOk = false;
+  try{ alreadyOk = localStorage.getItem("shbc_pwd_ok") === "1"; }catch(e){ /* storage blocked — fall through to asking */ }
+  if (alreadyOk) { return; }
+
   var input = prompt("請輸入密碼：");
   if (input === correctPassword) {
-    sessionStorage.setItem("shbc_pwd_ok", "1");
+    try{ localStorage.setItem("shbc_pwd_ok", "1"); }catch(e){ /* ignore — worst case it asks again next time */ }
     return;
   }
-  if (input !== correctPassword) {
-    // document.open()/write()/close() discards the rest of the page that the
-    // browser hasn't parsed yet, so nothing below this (header, tabs, saved
-    // message content, scripts) ever gets added to the page. Just setting
-    // innerHTML here did NOT stop that — the browser kept parsing and
-    // appending the rest of the original HTML afterward regardless.
-    document.open();
-    document.write("<h2 style='text-align:center;margin-top:100px;font-family:sans-serif;'>密碼錯誤</h2>");
-    document.close();
-    throw new Error("驗證失敗");
-  }
+  // document.open()/write()/close() discards the rest of the page that the
+  // browser hasn't parsed yet, so nothing below this (header, tabs, saved
+  // message content, scripts) ever gets added to the page. Just setting
+  // innerHTML here did NOT stop that — the browser kept parsing and
+  // appending the rest of the original HTML afterward regardless.
+  document.open();
+  document.write("<h2 style='text-align:center;margin-top:100px;font-family:sans-serif;'>密碼錯誤</h2>");
+  document.close();
+  throw new Error("驗證失敗");
 })();
 </script>
 <div class="wrap">
@@ -513,7 +515,10 @@ function initGoogleAuth(){
 const STORAGE_KEY = "shbc_sms_planner_v6";
 const PRIOR_STORAGE_KEYS = ["shbc_sms_planner_v5", "shbc_sms_planner_v4", "shbc_sms_planner_v3", "shbc_sms_planner_v2", "birthday_sms_yearplan_v1"];
 const BRAND = "世華生技";
-const MAX_LEN = 66; // 品牌名稱固定佔4字，SMS總長上限70字，本文請控制在66字內
+// 三竹簡訊發送時，會在固定品牌名稱後方自動加一個空格才接本文，
+// 所以「含品牌」字數 = 品牌字數 + 這個空格 + 本文字數
+const BRAND_SENT_LEN = BRAND.length + 1;
+const MAX_LEN = 66; // 品牌+空格固定佔5字，SMS總長上限70字，本文請控制在65字內較保險
 const STAGE_ORDER = ["opening","ongoing","closing"];
 const STAGE_LABEL = {opening:"🚀 活動開跑初期", ongoing:"📣 活動中", closing:"⏰ 即將結束通知"};
 
@@ -962,7 +967,7 @@ function renderMonthPanel(){
 
 function charCountLabel(text){
   const n = countLen(text);
-  return n + " / " + MAX_LEN + " 字（含品牌共 " + (n + BRAND.length) + " 字）";
+  return n + " / " + MAX_LEN + " 字（含品牌共 " + (n + BRAND_SENT_LEN) + " 字）";
 }
 
 function setCharCount(el, text){
@@ -1148,7 +1153,7 @@ document.getElementById('exportBtn').onclick = ()=>{
           lines.push(BIRTH_STAGE_LABEL[stage]+"：");
           ["A","B","C"].forEach(g=>{
             const t = th[stage][g];
-            lines.push(`　${GROUP_LABEL[g]}（本文${countLen(t)}字／含品牌${countLen(t)+BRAND.length}字）：${BRAND}${t}`);
+            lines.push(`　${GROUP_LABEL[g]}（本文${countLen(t)}字／含品牌${countLen(t)+BRAND_SENT_LEN}字）：${BRAND} ${t}`);
           });
         });
       });
@@ -1162,8 +1167,8 @@ document.getElementById('exportBtn').onclick = ()=>{
       lines.push("═════ " + STAGE_LABEL[stage] + " ═════");
       stageBlocks.forEach(blk=>{
         lines.push("─────────────────");
-        lines.push(`【${blk.label}】（本文${countLen(blk.text)}字／含品牌${countLen(blk.text)+BRAND.length}字）`);
-        lines.push(BRAND + blk.text);
+        lines.push(`【${blk.label}】（本文${countLen(blk.text)}字／含品牌${countLen(blk.text)+BRAND_SENT_LEN}字）`);
+        lines.push(BRAND + " " + blk.text);
       });
     });
   }
