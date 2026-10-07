@@ -312,6 +312,7 @@
     請先按上方「🔑 登入公司 Google 帳號」，登入後才能讀取／儲存共用資料（所有同事共用同一份雲端資料，存在公司 Google Drive 裡）。
   </div>
 
+  <div id="mainContent" style="display:none;">
   <div class="section-tabs" id="sectionTabs"></div>
 
   <!-- ============ BIRTHDAY SECTION ============ -->
@@ -378,6 +379,7 @@
   </div>
 
   <footer>世華生技內部行銷工具・僅供內部使用，非對外發布頁面</footer>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -413,6 +415,8 @@ function setAuthUI(signedIn, label){
   document.getElementById('authStatusText').textContent = label;
   document.getElementById('authGate').style.display = signedIn ? "none" : "block";
   document.getElementById('googleSignInBtn').textContent = signedIn ? "🔑 已登入（切換帳號）" : "🔑 登入公司 Google 帳號";
+  // nothing — tabs, message content, history library — is shown until signed in
+  document.getElementById('mainContent').style.display = signedIn ? "block" : "none";
 }
 
 async function driveFetch(url, options){
@@ -1274,7 +1278,6 @@ async function bootAfterAuth(){
 
 (function init(){
   setAuthUI(false, "尚未登入 Google");
-  renderLibrary(); // library list works without sign-in, so show it right away
   initGoogleAuth();
 })();
 </script>
