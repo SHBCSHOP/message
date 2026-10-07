@@ -237,31 +237,57 @@
 </style>
 </head>
 <body>
+  <div id="pwdGate" style="position:fixed;inset:0;z-index:9999;background:#F4F4F4;display:flex;align-items:center;justify-content:center;font-family:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;">
+    <div style="background:#fff;border:1px solid #DDDDDD;border-radius:14px;padding:32px 28px;max-width:300px;width:90%;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.08);">
+      <div style="font-weight:800;font-size:17px;margin-bottom:14px;color:#1A1A1A;">請輸入密碼</div>
+      <input id="pwdInput" type="password" style="width:100%;font-size:16px;padding:10px 12px;border-radius:8px;border:1px solid #DDDDDD;margin-bottom:6px;box-sizing:border-box;">
+      <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:#6E6E6E;margin-bottom:10px;cursor:pointer;">
+        <input id="pwdShowToggle" type="checkbox" style="margin:0;">顯示密碼
+      </label>
+      <div id="pwdError" style="color:#1A1A1A;font-weight:700;font-size:13px;margin-bottom:10px;display:none;">密碼錯誤，請再試一次</div>
+      <button id="pwdSubmit" style="width:100%;border:none;background:#1A1A1A;color:#fff;padding:10px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;">進入</button>
+    </div>
+  </div>
   <script>
 (function() {
-  var correctPassword = "0800655988";
+  var correctPassword = "888";
+  var gate = document.getElementById('pwdGate');
   // only ask once per device/browser: once the right password is entered,
   // remember it in localStorage (survives page reloads AND the full-page
-  // redirect to Google and back — unlike sessionStorage, which some browsers
-  // can behave inconsistently with across a cross-origin round trip).
+  // redirect to Google and back).
   var alreadyOk = false;
   try{ alreadyOk = localStorage.getItem("shbc_pwd_ok") === "1"; }catch(e){ /* storage blocked — fall through to asking */ }
-  if (alreadyOk) { return; }
+  if (alreadyOk) { gate.style.display = "none"; return; }
 
-  var input = prompt("請輸入密碼：");
-  if (input === correctPassword) {
-    try{ localStorage.setItem("shbc_pwd_ok", "1"); }catch(e){ /* ignore — worst case it asks again next time */ }
-    return;
+  var pwdInput = document.getElementById('pwdInput');
+  var pwdError = document.getElementById('pwdError');
+  var pwdSubmit = document.getElementById('pwdSubmit');
+  var pwdShowToggle = document.getElementById('pwdShowToggle');
+  pwdInput.focus();
+  pwdShowToggle.onchange = function(){ pwdInput.type = pwdShowToggle.checked ? "text" : "password"; };
+
+  function normalizeInput(s){
+    // trim stray whitespace, and convert full-width digits/letters (e.g. what
+    // some Chinese input methods produce when left in "全形" mode, like
+    // "０８００" instead of "0800") down to normal half-width ASCII, so the
+    // password still matches even if the browser's IME was in the wrong mode.
+    return s.trim().replace(/[\uFF01-\uFF5E]/g, function(ch){
+      return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    }).replace(/\u3000/g, " ");
   }
-  // document.open()/write()/close() discards the rest of the page that the
-  // browser hasn't parsed yet, so nothing below this (header, tabs, saved
-  // message content, scripts) ever gets added to the page. Just setting
-  // innerHTML here did NOT stop that — the browser kept parsing and
-  // appending the rest of the original HTML afterward regardless.
-  document.open();
-  document.write("<h2 style='text-align:center;margin-top:100px;font-family:sans-serif;'>密碼錯誤</h2>");
-  document.close();
-  throw new Error("驗證失敗");
+
+  function tryUnlock(){
+    if (normalizeInput(pwdInput.value) === correctPassword) {
+      try{ localStorage.setItem("shbc_pwd_ok", "1"); }catch(e){ /* ignore — worst case it asks again next time */ }
+      gate.style.display = "none";
+    } else {
+      pwdError.style.display = "block";
+      pwdInput.value = "";
+      pwdInput.focus();
+    }
+  }
+  pwdSubmit.onclick = tryUnlock;
+  pwdInput.onkeydown = function(e){ if (e.key === "Enter") tryUnlock(); };
 })();
 </script>
 <div class="wrap">
